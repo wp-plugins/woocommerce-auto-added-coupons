@@ -8,7 +8,7 @@ Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allow discounts to be automatically added to the WooCommerce cart when it's restrictions are met. The Coupons code will not be presented to the user.
+Allow discounts to be automatically added to the WooCommerce cart when it's restrictions are met. Coupons code will not be presented to the user.
 
 == Description ==
 

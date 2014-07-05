@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WooCommerce auto added coupons
- * Plugin URI: none yet
+ * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Automatically add certain coupons to the cart if it's conditions are met.
  * Version: 1.0
  * Author: Jos Koenis

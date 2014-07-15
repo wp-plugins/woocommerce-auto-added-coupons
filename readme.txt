@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 Tags: woocommerce, coupons, discount
 Requires at least: 3.0.1
 Tested up to: 3.9.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,26 +12,34 @@ Allow discounts to be automatically added to the WooCommerce cart when it's rest
 
 == Description ==
 
-"Jos - WooCommerce auto added coupons" allows you to select coupons that will automatically be added to
-the users cart if it's restrictions are met. The coupon will be removed when the restrictions are not met.
+"WooCommerce auto added coupons" allows you to select coupons that will automatically be added to
+the users cart if it's restrictions are met. The coupon will be removed when the restrictions are no longer met.
 
 The discount will be presented to the user by a descriptive text. No coupon code will be shown.
 
 No programming required.
 
-This plugin has been tested with WordPress 3.9.1 and WooCommerce 2.1.11. Also in combination with WPML.
+**Example**: Want to have a discount of $ 5.00 when the cart reaches $ 50.00 ? 
 
-= How to create an automatically added coupon? =
+1. Create a coupon, let's name it *auto_50bucks* and enter a short description e.g. *$ 50.00 order discount*
+2. On the General tab: Select discount type *Cart discount*, and set the coupon amount to $ 5.00
+3. On the Usage restrictions tab: Set minimum spend to $ 50.00 and check the *Auto coupon*-box
 
-1. Create a coupon through the 'Coupons' menu in WooCommerce. TIP: Name it auto_'whatever' so it will be easy to recognize the auto coupons
-2. Setup the coupon as you'd normally would. Make sure you enter a description for the coupon and set usage restrictions
-3. In the "Usage Restriction" tab, check the box "Auto coupon"
-4. Voila! That's it
+Voila! The discount will be applied when the customer reaches $ 50.00.
+
+This plugin has been tested with WordPress 3.9.1 and WooCommerce 2.1.11 and 2.1.12. Also in combination with WPML.
 
 == Installation ==
 
 1. Upload the plugin in the `/wp-content/plugins/` directory, or automatically install it through the 'New Plugin' menu in WordPress
 2. Activate the plugin through the 'Plugins' menu in WordPress
+
+= How to create an automatically added coupon? =
+
+1. Create a coupon through the 'Coupons' menu in WooCommerce. TIP: Name it auto_'whatever' so it will be easy to recognize the auto coupons
+2. Setup the coupon as you'd normally would. Make sure you enter a description for the coupon and set usage restrictions
+3. In the "Usage Restriction" tab, check the box *Auto coupon*
+4. Voila! That's it
 
 == Frequently Asked Questions ==
 
@@ -48,6 +56,9 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
+
+= 1.0.1 =
+* Don't add the coupon if *Individual use only* is checked.
 
 = 1.0 =
 * First version ever!

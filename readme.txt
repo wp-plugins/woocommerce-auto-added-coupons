@@ -58,7 +58,7 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 == Changelog ==
 
 = 1.0.1 =
-* Don't add the coupon if *Individual use only* is checked.
+* Don't add the coupon if *Individual use only* is checked and another coupon is already applied.
 
 = 1.0 =
 * First version ever!

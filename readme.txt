@@ -32,7 +32,7 @@ Voila! The discount will be applied when the customer reaches $ 50.00.
 
 **Example**: Apply coupon through an url.
 
-1. Use the url www.mypage.com/url-to-shop?apply_coupon=my_coupon
+1. Use the url www.example.com/url-to-shop?apply_coupon=my_coupon
 
 Voila! Any coupon can be applied this way.
 

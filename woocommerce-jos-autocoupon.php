@@ -2,16 +2,19 @@
 /**
  * Plugin Name: WooCommerce auto added coupons
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
- * Description: Automatically add certain coupons to the cart if it's conditions are met.
- * Version: 1.0.1
+ * Description: Allow discounts to be automatically added to the cart when it's restrictions are met. Allow applying coupons via an url.
+ * Version: 1.1.0
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
+ 1.1.0:
+    - Allow applying coupon via an url using *?apply_coupon=coupon_code*
  1.0.1: 
 	- Don't apply an autocoupon if the coupon is for individual_use and another coupon is already applied.
+	
  
  */
  
@@ -40,8 +43,9 @@ class WC_Jos_AutoCoupon_Controller{
 		add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
-		// 'woocommerce_before_cart'
-		// 'woocommerce_checkout_init'
+		
+		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' )); //Coupon through url
+
 	}
 	
 /* ADMIN HOOKS */
@@ -60,6 +64,16 @@ class WC_Jos_AutoCoupon_Controller{
 	}	
 
 /* FRONTEND HOOKS */
+
+/**
+ * Add coupon through url
+*/
+	public function coupon_by_url() {
+		if (isset($_GET['apply_coupon'])) {
+			global $woocommerce;
+			$woocommerce->cart->add_discount( $_GET['apply_coupon'] );
+		}
+	}
 	
 /**
  * Overwrite the html created by wc_cart_totals_coupon_label() so a descriptive text will be shown for the discount.

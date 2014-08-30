@@ -3,12 +3,13 @@ Contributors: josk79
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: woocommerce, coupons, discount
 Requires at least: 3.0.1
-Tested up to: 3.9.1
-Stable tag: 1.0.1
+Tested up to: 3.9.2
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allow discounts to be automatically added to the WooCommerce cart when it's restrictions are met. Coupons code will not be presented to the user.
+Allow applying coupons through an url.
+Allow discounts to be automatically added to the WooCommerce cart when it's restrictions are met.
 
 == Description ==
 
@@ -19,7 +20,9 @@ The discount will be presented to the user by a descriptive text. No coupon code
 
 No programming required.
 
-**Example**: Want to have a discount of $ 5.00 when the cart reaches $ 50.00 ? 
+Since version 1.1.0 it's also possible to apply coupons to the cart via an url.
+
+**Example**: Let the customer have a discount of $ 5.00 when the cart reaches $ 50.00. 
 
 1. Create a coupon, let's name it *auto_50bucks* and enter a short description e.g. *$ 50.00 order discount*
 2. On the General tab: Select discount type *Cart discount*, and set the coupon amount to $ 5.00
@@ -27,7 +30,13 @@ No programming required.
 
 Voila! The discount will be applied when the customer reaches $ 50.00.
 
-This plugin has been tested with WordPress 3.9.1 and WooCommerce 2.1.11 and 2.1.12. Also in combination with WPML.
+**Example**: Apply coupon through an url.
+
+1. Use the url www.mypage.com/url-to-shop?apply_coupon=my_coupon
+
+Voila! Any coupon can be applied this way.
+
+This plugin has been tested with WordPress 3.9.2 and WooCommerce 2.1.11 and 2.1.12. Also in combination with WPML.
 
 == Installation ==
 
@@ -47,15 +56,22 @@ This plugin has been tested with WordPress 3.9.1 and WooCommerce 2.1.11 and 2.1.
 
 Yes, all frontend string values are translatable with WPML. Translatable items appear in the context `woocommerce-jos-autocoupon` in "String Translations".
 
+= Why isn't my coupon applied using www.example.com?apply_coupon=my_coupon ? =
+
+The coupon will only be applied if the url links to a WooCommerce page (e.g. product loop / cart / product detail ).
+
 = Can I make a donation? =
 
-Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) is the link.
+Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) is the link. Greatly appreciated!
 
 == Screenshots ==
 
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
+
+= 1.1.0 =
+* Allow applying coupon via an url using *?apply_coupon=coupon_code*
 
 = 1.0.1 =
 * Don't add the coupon if *Individual use only* is checked and another coupon is already applied.

@@ -3,13 +3,16 @@
  * Plugin Name: WooCommerce auto added coupons
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Allow discounts to be automatically added to the cart when it's restrictions are met. Allow applying coupons via an url.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
+ 1.1.2:
+    - Minor change to make the plugin compatible with WooCommerce 2.3.1
+	- Loop through coupons in ascending order
  1.1.1:
     - Tested with Wordpress 4.0
  1.1.0:
@@ -124,7 +127,7 @@ class WC_Jos_AutoCoupon_Controller{
  */	
 	function update_matched_autocoupons() {
 		global $woocommerce;
-
+		$this->remove_unmatched_autocoupons();
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
@@ -132,8 +135,6 @@ class WC_Jos_AutoCoupon_Controller{
 					$woocommerce->cart->add_discount( $coupon_code );				
 					$this->overwrite_success_message( $coupon );
 				}
-			} else {
-				$this->remove_unmatched_autocoupons();
 			}
 		}
 	}
@@ -226,13 +227,14 @@ class WC_Jos_AutoCoupon_Controller{
 				'posts_per_page' => -1,			
 				'post_type'   => 'shop_coupon',
 				'post_status' => 'publish',
+				'orderby' => 'title'
 			);
 		
 			$query = new WP_Query($query_args);
 			foreach ($query->posts as $post) {
 				$coupon = new WC_Coupon($post->post_title);
 				if ( $this->is_auto_coupon($coupon) ) {
-					$this->_autocoupon_codes[] = $coupon->post_title;
+					$this->_autocoupon_codes[] = $post->post_title;
 				}
 			}			
 		}

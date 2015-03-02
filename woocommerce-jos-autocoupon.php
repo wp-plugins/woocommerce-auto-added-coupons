@@ -3,14 +3,16 @@
  * Plugin Name: WooCommerce auto added coupons
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Allow discounts to be automatically added to the cart when it's restrictions are met. Allow applying coupons via an url.
- * Version: 1.1.3
+ * Version: 1.1.3.1
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
- 1.1.3:
+  1.1.3.1:
+    - FIX: Apply auto coupon if discount is 0.00 and free shipping is ticked	
+  1.1.3:
     - Don't apply an auto coupon if the discount is 0.00
     - Allow applying multiple coupons via an url using *?apply_coupon=coupon_code1,coupon_code2
  1.1.2:
@@ -157,7 +159,10 @@ class WC_Jos_AutoCoupon_Controller{
 			return false;
 		} else if ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
 			return false;
-		} else {		
+		} else {
+			if ( $coupon->enable_free_shipping() ) {
+				return true;
+			}
 			//Test whether discount > 0
 			foreach ( $woocommerce->cart->get_cart() as $cart_item) {
 				if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {

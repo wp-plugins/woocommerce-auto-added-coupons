@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 Tags: woocommerce, coupons, discount
 Requires at least: 3.0.1
 Tested up to: 4.1.1
-Stable tag: 1.1.3.1
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,10 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
+= 1.1.4 =
+* Translation support through .mo / .po files
+* Included translations: Dutch, German, Spanish
+
 = 1.1.3.1 =
 * FIX: Apply auto coupon if discount is 0.00 and free shipping is ticked	
 

@@ -70,8 +70,8 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 
 == Changelog ==
 = 1.1.5 =
-* FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax) (Thanks to ircary)
-* Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes
+* FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
+* Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes (Thanks to ircary)
 
 = 1.1.4 =
 * Translation support through .mo / .po files

@@ -3,13 +3,16 @@
  * Plugin Name: WooCommerce auto added coupons
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Allow discounts to be automatically added to the cart when it's restrictions are met. Allow applying coupons via an url.
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
+  1.1.5:
+    - FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
+    - Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes
   1.1.4:
     - Translation support through .mo / .po files
   1.1.3.1:
@@ -117,21 +120,24 @@ class WC_Jos_AutoCoupon_Controller{
 */
 	function coupon_html( $originaltext, $coupon ) {
 		if ( $this->is_auto_coupon($coupon) ) {
-			if ( ! empty(WC()->cart->coupon_discount_amounts[ $coupon->code ]) ) {
-					$discount_html = '-' . wc_price( WC()->cart->coupon_discount_amounts[ $coupon->code ] );
-					$value[] = apply_filters( 'woocommerce_coupon_discount_amount_html', $discount_html, $coupon );
+				$value  = array();
 
-					if ( $coupon->enable_free_shipping() ) {
-						$value[] = __( 'Free shipping coupon', 'woocommerce' );
-					}
+				if ( $amount = WC()->cart->get_coupon_discount_amount( $coupon->code, WC()->cart->display_cart_ex_tax ) ) {
+					$discount_html = '-' . wc_price( $amount );
+				} else {
+					$discount_html = '';
+				}
 
-					return implode(', ', array_filter($value)); //Remove empty array elements
-			} else {
-				$discount_html = '';
-			}
-			return $discount_html;
-		} else
+				$value[] = apply_filters( 'woocommerce_coupon_discount_amount_html', $discount_html, $coupon );
+
+				if ( $coupon->enable_free_shipping() ) {
+					$value[] = __( 'Free shipping coupon', 'woocommerce' );
+				}
+
+				return implode(', ', array_filter($value)); //Remove empty array elements
+		} else {
 			return $originaltext;
+		}
 	}	
 	
 /**
@@ -267,7 +273,14 @@ class WC_Jos_AutoCoupon_Controller{
 				'posts_per_page' => -1,			
 				'post_type'   => 'shop_coupon',
 				'post_status' => 'publish',
-				'orderby' => 'title'
+				'orderby' => 'title',				
+				'meta_query' => array(
+					array(
+						'key' => 'woocommerce-jos-autocoupon',
+						'value' => 'yes',
+						'compare' => '=',
+					),
+				)
 			);
 		
 			$query = new WP_Query($query_args);

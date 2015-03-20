@@ -3,13 +3,23 @@
  * Plugin Name: WooCommerce auto added coupons
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Allow discounts to be automatically added to the cart when it's restrictions are met. Allow applying coupons via an url.
- * Version: 1.1.2
+ * Version: 1.1.5
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
+  1.1.5:
+    - FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
+    - Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes
+  1.1.4:
+    - Translation support through .mo / .po files
+  1.1.3.1:
+    - FIX: Apply auto coupon if discount is 0.00 and free shipping is ticked	
+  1.1.3:
+    - Don't apply an auto coupon if the discount is 0.00
+    - Allow applying multiple coupons via an url using *?apply_coupon=coupon_code1,coupon_code2
  1.1.2:
     - Minor change to make the plugin compatible with WooCommerce 2.3.1
 	- Loop through coupons in ascending order
@@ -39,7 +49,9 @@ class WC_Jos_AutoCoupon_Controller{
 		if ( ! class_exists('WC_Coupon') ) {
 			return;
 		}
-	
+
+		load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
+		
 		//Admin hooks
 		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options' ), 10, 0 );
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
@@ -75,8 +87,12 @@ class WC_Jos_AutoCoupon_Controller{
 */
 	public function coupon_by_url() {
 		if (isset($_GET['apply_coupon'])) {
+			$split = explode( ",", $_GET['apply_coupon'] );
+			
 			global $woocommerce;
-			$woocommerce->cart->add_discount( $_GET['apply_coupon'] );
+			foreach ( $split as $coupon_code ) {
+				$woocommerce->cart->add_discount( $coupon_code );
+			}
 		}
 	}
 	
@@ -104,21 +120,24 @@ class WC_Jos_AutoCoupon_Controller{
 */
 	function coupon_html( $originaltext, $coupon ) {
 		if ( $this->is_auto_coupon($coupon) ) {
-			if ( ! empty(WC()->cart->coupon_discount_amounts[ $coupon->code ]) ) {
-					$discount_html = '-' . wc_price( WC()->cart->coupon_discount_amounts[ $coupon->code ] );
-					$value[] = apply_filters( 'woocommerce_coupon_discount_amount_html', $discount_html, $coupon );
+				$value  = array();
 
-					if ( $coupon->enable_free_shipping() ) {
-						$value[] = __( 'Free shipping coupon', 'woocommerce' );
-					}
+				if ( $amount = WC()->cart->get_coupon_discount_amount( $coupon->code, WC()->cart->display_cart_ex_tax ) ) {
+					$discount_html = '-' . wc_price( $amount );
+				} else {
+					$discount_html = '';
+				}
 
-					return implode(', ', array_filter($value)); //Remove empty array elements
-			} else {
-				$discount_html = '';
-			}
-			return $discount_html;
-		} else
+				$value[] = apply_filters( 'woocommerce_coupon_discount_amount_html', $discount_html, $coupon );
+
+				if ( $coupon->enable_free_shipping() ) {
+					$value[] = __( 'Free shipping coupon', 'woocommerce' );
+				}
+
+				return implode(', ', array_filter($value)); //Remove empty array elements
+		} else {
 			return $originaltext;
+		}
 	}	
 	
 /**
@@ -131,12 +150,39 @@ class WC_Jos_AutoCoupon_Controller{
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
-				if ( $coupon->is_valid() && ( $coupon->individual_use != 'yes' ||  count($woocommerce->cart->applied_coupons) == 0 )) {
+				if ( $this->coupon_can_be_applied($coupon) ) {
 					$woocommerce->cart->add_discount( $coupon_code );				
 					$this->overwrite_success_message( $coupon );
 				}
 			}
 		}
+	}
+	
+/**
+ * Test whether the coupon is valid and has a discount > 0 
+ * @return bool
+ */
+	function coupon_can_be_applied($coupon) {
+		global $woocommerce;
+		
+		if ( ! $coupon->is_valid() ) {
+			return false;
+		} else if ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
+			return false;
+		} else {
+			if ( $coupon->enable_free_shipping() ) {
+				return true;
+			}
+			//Test whether discount > 0
+			foreach ( $woocommerce->cart->get_cart() as $cart_item) {
+				if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
+					if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;		
 	}
 	
 /**
@@ -150,7 +196,7 @@ class WC_Jos_AutoCoupon_Controller{
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {		
 			if ( $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
-				if ( ! $coupon->is_valid() ) {
+				if ( ! $this->coupon_can_be_applied($coupon) ) {
 					WC()->cart->remove_coupon( $coupon_code );  
 				}
 			}
@@ -227,7 +273,14 @@ class WC_Jos_AutoCoupon_Controller{
 				'posts_per_page' => -1,			
 				'post_type'   => 'shop_coupon',
 				'post_status' => 'publish',
-				'orderby' => 'title'
+				'orderby' => 'title',				
+				'meta_query' => array(
+					array(
+						'key' => 'woocommerce-jos-autocoupon',
+						'value' => 'yes',
+						'compare' => '=',
+					),
+				)
 			);
 		
 			$query = new WP_Query($query_args);

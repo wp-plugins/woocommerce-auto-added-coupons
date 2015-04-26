@@ -10,6 +10,8 @@
  
  /*
  Change history:
+  1.1.6-b1:
+    - FIX Validate email restrictions for auto coupons
   1.1.5:
     - FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
     - Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes
@@ -41,6 +43,8 @@ class WC_Jos_AutoCoupon_Controller{
 	
 	private $_autocoupon_codes = null;
 	
+	private $_user_emails = null;
+	
 	public function __construct() {    
 		add_action('init', array( &$this, 'controller_init' ));
 	}
@@ -49,6 +53,8 @@ class WC_Jos_AutoCoupon_Controller{
 		if ( ! class_exists('WC_Coupon') ) {
 			return;
 		}
+		
+		$this->log( $_SERVER['REQUEST_URI'] );
 
 		load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
 		
@@ -61,6 +67,10 @@ class WC_Jos_AutoCoupon_Controller{
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
 		
+		//Last check for coupons with restricted_emails
+		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'checkout_update_order_review' ), 10 ); // AJAX One page checkout 
+		add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
+
 		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' )); //Coupon through url
 
 	}
@@ -151,8 +161,11 @@ class WC_Jos_AutoCoupon_Controller{
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( $this->coupon_can_be_applied($coupon) ) {
+					$this->log( sprintf( "Applying %s", $coupon_code ) );
 					$woocommerce->cart->add_discount( $coupon_code );				
 					$this->overwrite_success_message( $coupon );
+				} else {
+					$this->log( sprintf( "Not applicable: %s", $coupon_code ) );
 				}
 			}
 		}
@@ -165,25 +178,45 @@ class WC_Jos_AutoCoupon_Controller{
 	function coupon_can_be_applied($coupon) {
 		global $woocommerce;
 		
+		//Test validity
 		if ( ! $coupon->is_valid() ) {
 			return false;
-		} else if ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
+		}
+		//Test individual use
+		if ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
 			return false;
-		} else {
-			if ( $coupon->enable_free_shipping() ) {
-				return true;
+		}		
+				
+		//Test restricted emails
+		if ( is_array( $coupon->customer_email ) && sizeof( $coupon->customer_email ) > 0 ) {
+			$user_emails = array_map( 'sanitize_email', array_map( 'strtolower', $this->get_user_emails() ) );
+			$coupon_emails = array_map( 'sanitize_email', array_map( 'strtolower', $coupon->customer_email ) );
+			
+			if ( 0 == sizeof( array_intersect( $user_emails, $coupon_emails ) ) ) {
+				return false;
 			}
-			//Test whether discount > 0
-			foreach ( $woocommerce->cart->get_cart() as $cart_item) {
-				if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
-					if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {
-						return true;
-					}
+		}
+		
+		//===========================================
+		//Can be applied. Now test if it has a value
+		
+		if ( $coupon->enable_free_shipping() ) {
+			return true;
+		}
+		//Test whether discount > 0
+		foreach ( $woocommerce->cart->get_cart() as $cart_item) {
+			if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
+				if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {
+					return true;
 				}
 			}
 		}
+		
 		return false;		
 	}
+
+
+	
 	
 /**
  * Remove unmatched autocoupons. No message will be shown. 
@@ -261,6 +294,61 @@ class WC_Jos_AutoCoupon_Controller{
 	}	
 
 /**
+ * Get a list of the users' known email addresses
+ *
+ */
+	private function get_user_emails() {
+		if ( ! is_array($this->_user_emails) ) {
+			$this->_user_emails = array();
+			//Email of the logged in user
+			if ( is_user_logged_in() ) {
+				$current_user   = wp_get_current_user();
+				$this->_user_emails[] = $current_user->user_email;
+			}
+		}
+		$this->log( "User emails: ", join( ",", $this->_user_emails ) );
+		return $this->_user_emails;		
+	}
+
+/**
+ * Append a single or an array of email addresses.
+ * @param  array|string $append_emails The email address(es) to be added
+ * @return void
+ */
+	private function append_user_emails($append_emails) {
+		//$append_emails must be an array
+		if ( ! is_array( $append_emails ) ) {
+			$append_emails = array( $append_emails );
+		}
+		
+		$this->_user_emails = array_merge( $this->get_user_emails(), $append_emails );
+	}
+	
+/**
+ * After checkout validation
+ * Get billing email for coupon with restricted_emails
+ * Append matching coupons with restricted emails
+ * @param $posted array Billing data 
+ * @return void
+ */
+	public function after_checkout_validation( $posted ) {
+		$this->log ( sprintf( "After checkout: %s", print_r ( $posted, true ) ) );
+		$this->get_user_emails();
+		if ( isset ( $posted['billing_email'] ) ) {
+			$this->append_user_emails( $posted['billing_email'] );
+		}
+		
+		$this->update_matched_autocoupons();
+	}
+
+	//Same as after_checkout_validation, only post_data is a query=string&like=this that must be converted to an array
+	public function checkout_update_order_review( $post_data ) {
+		$posted = array();
+		parse_str( $post_data, $posted );
+		$this->after_checkout_validation( $posted );
+	}
+	
+/**
  * Get a list of all auto coupon codes
  * @return array All auto coupon codes
  */		
@@ -293,10 +381,15 @@ class WC_Jos_AutoCoupon_Controller{
 		}
 		return $this->_autocoupon_codes;
 	}	
-
-
 	
+	private function log ( $string ) {
+		// file_put_contents ( "/lamp/www/logfile.log", $string . "\n" , FILE_APPEND );
+	}
 }
+
+// END OF CLASS
+// ====================================================================================
+
 
 /**
  * Create the plugin if WooCommerce is active
@@ -317,3 +410,17 @@ if ( ! function_exists( 'woocommerce_jos_autocoupon_plugin_meta' ) ) {
 	}
 	add_filter( 'plugin_row_meta', 'woocommerce_jos_autocoupon_plugin_meta', 10, 2 );
 }
+
+
+
+// =========================================================================================================
+
+/* HINT: Use this snippet in your theme if you use coupons with restricted emails and AJAX enabled one-page-checkout.
+
+//Update the cart preview when the billing email is changed by the customer
+add_filter( 'woocommerce_checkout_fields', function( $checkout_fields ) {
+	$checkout_fields['billing']['billing_email']['class'][] = 'update_totals_on_change';
+	return $checkout_fields;	
+} );
+ 
+ */ 

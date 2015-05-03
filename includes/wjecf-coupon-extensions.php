@@ -55,10 +55,13 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		<select id="wjecf_payment_methods" name="wjecf_payment_methods[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any shipping method', 'woocommerce-jos-autocoupon' ); ?>">
 			<?php
 				$payment_method_ids = (array) get_post_meta( $thepostid, '_wjecf_payment_methods', true );
-				$payment_methods = WC()->payment_gateways->get_available_payment_gateways();
+				//DONT USE: CAN CRASH IN UNKNOWN OCCASIONS // $payment_methods = WC()->payment_gateways->available_payment_gateways();
+				$payment_methods = WC()->payment_gateways->payment_gateways();
 
 				if ( $payment_methods ) foreach ( $payment_methods as $payment_method ) {
-					echo '<option value="' . esc_attr( $payment_method->id ) . '"' . selected( in_array( $payment_method->id, $payment_method_ids ), true, false ) . '>' . esc_html( $payment_method->title ) . '</option>';
+					if ('yes' === $payment_method->enabled) {
+						echo '<option value="' . esc_attr( $payment_method->id ) . '"' . selected( in_array( $payment_method->id, $payment_method_ids ), true, false ) . '>' . esc_html( $payment_method->title ) . '</option>';
+					}
 				}
 			?>
 		</select> <img class="help_tip" data-tip='<?php _e( 'One of these payment methods must be selected in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>

@@ -3,14 +3,14 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.0.0-b2
+ * Version: 2.0.0-b3
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
-  2.0.0-b2:
+  2.0.0-b3:
     - RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
     - FEATURE: Restrict coupons by payment method
     - FEATURE: Restrict coupons by shipping method	

@@ -8,33 +8,38 @@ Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Allow applying coupons through an url.
-Allow discounts to be automatically added to the WooCommerce cart when it's restrictions are met.
+Additional functionality for WooCommerce Coupons: Allow discounts to be automatically applied, allow applying coupons via an url, etc...
 
 == Description ==
 
-"WooCommerce auto added coupons" allows you to select coupons that will automatically be added to
-the users cart if it's restrictions are met. The coupon will be removed when the restrictions are no longer met.
+"WooCommerce Extended Coupon Features" (formerly known as: WooCommerce auto added coupons) adds functionality to the WooCommerce coupons. 
+Very easy to use, the functionality is integrated to the WooCommerce Coupon admin panel.
 
-The discount will be presented to the user by a descriptive text. No coupon code will be shown.
+* *Auto coupons*: Allow couponss to be automatically added to the users cart if it's restrictions are met,
+* Apply coupon via an url,
+* Restrict coupon by shipping method,
+* Restrict coupon by payment method
 
-No programming required.
+= Example: Auto coupon =
 
-Since version 1.1.0 it's also possible to apply coupons to the cart via an url.
-
-**Example**: Let the customer have a discount of $ 5.00 when the cart reaches $ 50.00. 
+Let the customer have a discount of $ 5.00 when the cart reaches $ 50.00. 
 
 1. Create a coupon, let's name it *auto_50bucks* and enter a short description e.g. *$ 50.00 order discount*
 2. On the General tab: Select discount type *Cart discount*, and set the coupon amount to $ 5.00
 3. On the Usage restrictions tab: Set minimum spend to $ 50.00 and check the *Auto coupon*-box
 
-Voila! The discount will be applied when the customer reaches $ 50.00.
+Voila! The discount will be applied when the customer reaches $ 50.00 and a descriptive message will be shown.
 
-**Example**: Apply coupon through an url.
+If the restrictions are no longer met, it will silently be removed from the cart.
+
+= Example: Apply coupon via an URL =
+
+Apply coupon through an url like this:
 
 1. Use the url www.example.com/url-to-shop?apply_coupon=my_coupon
 
 Voila! Any coupon can be applied this way.
+
 
 This plugin has been tested with WordPress 3.9.2 and WooCommerce 2.1.11 and 2.1.12. Also in combination with WPML.
 
@@ -60,6 +65,22 @@ Yes, all frontend string values are translatable with WPML. Translatable items a
 
 The coupon will only be applied if the url links to a WooCommerce page (e.g. product loop / cart / product detail ).
 
+= The cart is not updated after changing the payment method =
+
+In your theme add class "update_totals_on_change" to the container (div / p / whatever) that holds the payment method radio buttons.
+You can do this by overriding woocommerce/templates/checkout/payment.php (place it in your_template/woocommerce/checkout/).
+
+= The cart is not updated after changing the billing email address =
+
+Paste this snippet in your theme's functions.php:
+`
+//Update the cart preview when the billing email is changed by the customer
+add_filter( 'woocommerce_checkout_fields', function( $checkout_fields ) {
+	$checkout_fields['billing']['billing_email']['class'][] = 'update_totals_on_change';
+	return $checkout_fields;	
+} );
+`
+
 = Can I make a donation? =
 
 Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted) is the link. Greatly appreciated!
@@ -69,7 +90,10 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
-= 1.1.6-b1 =
+= 2.0.0-b2 =
+* RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
+* FEATURE: Restrict coupons by payment method
+* FEATURE: Restrict coupons by shipping method	
 * FIX Validate email restrictions for auto coupons
 
 = 1.1.5 =

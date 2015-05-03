@@ -19,8 +19,6 @@ class WC_Jos_AutoCoupon_Controller{
 		
 		$this->log( $_SERVER['REQUEST_URI'] );
 
-		load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
-		
 		//Admin hooks
 		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options' ), 10, 0 );
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
@@ -49,7 +47,7 @@ class WC_Jos_AutoCoupon_Controller{
 		woocommerce_wp_checkbox( array(
 			'id'          => 'woocommerce-jos-autocoupon',
 			'label'       => __( 'Auto coupon', 'woocommerce-jos-autocoupon' ),
-			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customers cart if the coupon is applied. (JOS - Woocommerce auto added coupons plugin).", 'woocommerce-jos-autocoupon' )
+			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customers cart if the coupon is applied.", 'woocommerce-jos-autocoupon' )
 		) );
 	
 	}

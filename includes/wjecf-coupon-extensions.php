@@ -28,6 +28,12 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		global $thepostid, $post;
 		$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
 		
+		//Title
+		echo "<h3 style='display:inline'>" . __( 'Extended Coupon Features', 'woocommerce-jos-autocoupon' ) . "</h3>\n";
+		printf( '<a href="%s" title="Support the development" target="_blank">', $this->get_donate_url() );
+		_e('Donate to the developer', 'woocommerce-jos-autocoupon' );
+		echo  "</a>\n";
+		
 		// Shipping methods
 		?>
 		<p class="form-field"><label for="wjecf_shipping_methods"><?php _e( 'Shipping methods', 'woocommerce-jos-autocoupon' ); ?></label>
@@ -130,6 +136,10 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		}
 		
 		return $v;
+	}
+	
+	public static function get_donate_url() {
+		return "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted";
 	}
 	
 }

@@ -48,8 +48,14 @@ require_once( 'includes/wjecf-coupon-extensions.php' );
  * Create the plugin if WooCommerce is active
  **/
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
-		$wjce_extended_coupon_features = new WC_Jos_Extended_Coupon_Features_Controller();
-		$wjce_autocoupon = new WC_Jos_AutoCoupon_Controller();
+	
+	add_action('plugins_loaded', function() {
+		load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
+	} );
+
+	$wjce_extended_coupon_features = new WC_Jos_Extended_Coupon_Features_Controller();
+	$wjce_autocoupon = new WC_Jos_AutoCoupon_Controller();
+		
 }
 
 /**
@@ -58,7 +64,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 if ( ! function_exists( 'woocommerce_jos_autocoupon_plugin_meta' ) ) {
 	function woocommerce_jos_autocoupon_plugin_meta( $links, $file ) {
 		if ( strpos( $file, 'woocommerce-jos-autocoupon.php' ) !== false ) {
-			$links = array_merge( $links, array( '<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted" title="Support the development">Donate</a>' ) );
+			$links = array_merge( $links, array( '<a href="' . WC_Jos_Extended_Coupon_Features_Controller::get_donate_url() . '" title="Support the development" target="_blank">Donate</a>' ) );
 		}
 		return $links;
 	}

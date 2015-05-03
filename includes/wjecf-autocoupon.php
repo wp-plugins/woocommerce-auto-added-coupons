@@ -122,7 +122,7 @@ class WC_Jos_AutoCoupon_Controller{
  * @return void
  */	
 	function update_matched_autocoupons() {
-		if ( $_check_already_performed ) return;
+		if ( $this->_check_already_performed ) return;
 		
 		global $woocommerce;
 		$this->remove_unmatched_autocoupons();
@@ -138,7 +138,7 @@ class WC_Jos_AutoCoupon_Controller{
 				}
 			}
 		}
-		$_check_already_performed = true;
+		$this->_check_already_performed = true;
 	}
 	
 /**

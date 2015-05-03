@@ -32,7 +32,7 @@ class WC_Jos_AutoCoupon_Controller{
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
 		
 		//Last check for coupons with restricted_emails
-		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'checkout_update_order_review' ), 10 ); // AJAX One page checkout 
+		//DONT USE: Breaks cart preview update //add_action( 'woocommerce_checkout_update_order_review', array( $this, 'checkout_update_order_review' ), 10 ); // AJAX One page checkout  // 
 		add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
 
 		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' )); //Coupon through url
@@ -122,6 +122,7 @@ class WC_Jos_AutoCoupon_Controller{
  * @return void
  */	
 	function update_matched_autocoupons() {
+		$this->log ( 'update_matched_autocoupons' );
 		if ( $this->_check_already_performed ) return;
 		
 		global $woocommerce;
@@ -200,6 +201,7 @@ class WC_Jos_AutoCoupon_Controller{
 			if ( $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( ! $this->coupon_can_be_applied($coupon) ) {
+					$this->log( sprintf( "Removing %s", $coupon_code ) );
 					WC()->cart->remove_coupon( $coupon_code );  
 				}
 			}
@@ -310,7 +312,8 @@ class WC_Jos_AutoCoupon_Controller{
  * @return void
  */
 	public function after_checkout_validation( $posted ) {
-		$this->log ( sprintf( "After checkout: %s", print_r ( $posted, true ) ) );
+		$this->log ( 'update_matched_autocoupons' );
+		// $this->log ( sprintf( "After checkout: %s", print_r ( $posted, true ) ) );
 		$this->get_user_emails();
 		if ( isset ( $posted['billing_email'] ) ) {
 			$this->append_user_emails( $posted['billing_email'] );
@@ -361,6 +364,6 @@ class WC_Jos_AutoCoupon_Controller{
 	}	
 	
 	private function log ( $string ) {
-		// file_put_contents ( "/lamp/www/logfile.log", $string . "\n" , FILE_APPEND );
+		// file_put_contents ( "/lamp/www/logfile.log", current_filter() . ": " . $string . "\n" , FILE_APPEND );
 	}
 }

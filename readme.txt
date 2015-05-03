@@ -90,7 +90,7 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
-= 2.0.0-b2 =
+= 2.0.0-b3 =
 * RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
 * FEATURE: Restrict coupons by payment method
 * FEATURE: Restrict coupons by shipping method	

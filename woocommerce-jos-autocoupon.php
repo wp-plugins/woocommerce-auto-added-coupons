@@ -3,24 +3,26 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.0.0-b5
+ * Version: 2.0.0
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
-  2.0.0-b5:
+  2.0.0:
     - RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
     - FEATURE: Restrict coupons by payment method
     - FEATURE: Restrict coupons by shipping method	
-  1.1.6-b1:
+	- FEATURE: Use AND-operator for the selected products (default is OR)
     - FIX: Validate email restrictions for auto coupons
+	- Norwegian translation added (Thanks to Anders Zorensen)
   1.1.5:
     - FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
     - Performance: get_all_auto_coupons select only where meta woocommerce_jos_autocoupon = yes
   1.1.4:
     - Translation support through .mo / .po files
+	- Included translations: Dutch, German, Spanish (Thanks to stephan.sperling for the german translation)
   1.1.3.1:
     - FIX: Apply auto coupon if discount is 0.00 and free shipping is ticked	
   1.1.3:

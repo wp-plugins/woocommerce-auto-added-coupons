@@ -8,17 +8,18 @@ Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Additional functionality for WooCommerce Coupons: Allow discounts to be automatically applied, allow applying coupons via an url, etc...
+Additional functionality for WooCommerce Coupons: Allow discounts to be automatically applied, applying coupons via url, etc...
 
 == Description ==
 
 "WooCommerce Extended Coupon Features" (formerly known as: WooCommerce auto added coupons) adds functionality to the WooCommerce coupons. 
-Very easy to use, the functionality is integrated to the WooCommerce Coupon admin panel.
+Very easy to use, the functionality is conveniently integrated to the WooCommerce Edit Coupon panel.
 
-* *Auto coupons*: Allow couponss to be automatically added to the users cart if it's restrictions are met,
+* *Auto coupons*: Allow coupons to be automatically added to the users cart if it's restrictions are met,
 * Apply coupon via an url,
 * Restrict coupon by shipping method,
-* Restrict coupon by payment method
+* Restrict coupon by payment method,
+* Restrict coupon by a combination of products
 
 = Example: Auto coupon =
 
@@ -41,7 +42,7 @@ Apply coupon through an url like this:
 Voila! Any coupon can be applied this way.
 
 
-This plugin has been tested with WordPress 3.9.2 and WooCommerce 2.1.11 and 2.1.12. Also in combination with WPML.
+This plugin has been tested with WordPress 4.2.1 and WooCommerce 2.3.8. Also in combination with WPML and qTranslate-X.
 
 == Installation ==
 
@@ -90,11 +91,13 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
-= 2.0.0-b5 =
+= 2.0.0 =
 * RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
 * FEATURE: Restrict coupons by payment method
 * FEATURE: Restrict coupons by shipping method	
+* FEATURE: Use AND-operator for the selected products (default is OR)
 * FIX: Validate email restrictions for auto coupons
+* Norwegian translation added (Thanks to Anders Zorensen)
 
 = 1.1.5 =
 * FIX: Cart total discount amount showing wrong discount value in newer WooCommerce versions (tax)
@@ -126,4 +129,11 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 
 = 1.0 =
 * First version ever!
+== Upgrade Notice ==
+
+= 2.0.0 =
+New name, extended functionality! 
+Additional features are added to the coupon: 
+Restrict by shipping method, restrict by payment method, restrict by a combination of products.
+
 

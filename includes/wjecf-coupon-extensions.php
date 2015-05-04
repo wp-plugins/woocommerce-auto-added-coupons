@@ -28,11 +28,40 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		global $thepostid, $post;
 		$thepostid = empty( $thepostid ) ? $post->ID : $thepostid;
 		
+		//See WooCommerce class-wc-meta-box-coupon-data.php function ouput
+		
 		//Title
 		echo "<h3 style='display:inline'>" . __( 'Extended Coupon Features', 'woocommerce-jos-autocoupon' ) . "</h3>\n";
 		printf( '<a href="%s" title="Support the development" target="_blank">', $this->get_donate_url() );
 		_e('Donate to the developer', 'woocommerce-jos-autocoupon' );
 		echo  "</a>\n";
+		
+		// AND in stead of OR the products
+		woocommerce_wp_checkbox( array( 
+			'id' => '_wjecf_products_and', 
+			'label' => __( 'AND Products (not OR)', 'woocommerce-jos-autocoupon' ), 
+			'description' => __( 'Check this box if ALL of the products (see above) must be in the cart to use this coupon (in stead of only one of the products).', 'woocommerce-jos-autocoupon' )
+		) );
+		
+		
+		//Trick to show AND or OR next to the product_ids field 		
+		$label_and = __( '(AND)', 'woocommerce-jos-autocoupon' );
+		$label_or  = __( '(OR)',  'woocommerce-jos-autocoupon' );
+		$label = get_post_meta( $thepostid, '_wjecf_products_and', true ) == 'yes' ? $label_and : $label_or;
+		?>		
+		<script type="text/javascript">
+			//Update AND or OR in product_ids label when checkbox value changes
+			jQuery("#_wjecf_products_and").click( 
+				function() { 
+					jQuery("#wjecf_products_and_label").text( 
+						jQuery("#_wjecf_products_and").attr('checked') ? "<?php echo $label_and; ?>" : "<?php echo $label_or; ?>"
+					);
+			} );
+			//Append AND/OR to the product_ids label
+			jQuery(".form-field:has('[name=\"product_ids\"]') label").append( ' <strong><span id="wjecf_products_and_label"><?php echo $label; ?></span></strong>' );
+		</script>
+		<?php //End of the AND/OR trick
+
 		
 		// Shipping methods
 		?>
@@ -57,7 +86,6 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 				$payment_method_ids = (array) get_post_meta( $thepostid, '_wjecf_payment_methods', true );
 				//DONT USE: CAN CRASH IN UNKNOWN OCCASIONS // $payment_methods = WC()->payment_gateways->available_payment_gateways();
 				$payment_methods = WC()->payment_gateways->payment_gateways();
-
 				if ( $payment_methods ) foreach ( $payment_methods as $payment_method ) {
 					if ('yes' === $payment_method->enabled) {
 						echo '<option value="' . esc_attr( $payment_method->id ) . '"' . selected( in_array( $payment_method->id, $payment_method_ids ), true, false ) . '>' . esc_html( $payment_method->title ) . '</option>';
@@ -70,6 +98,9 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 	}
 	
 	public function process_shop_coupon_meta( $post_id, $post ) {
+		$wjecf_products_and = isset( $_POST['_wjecf_products_and'] ) ? 'yes' : 'no';
+		update_post_meta( $post_id, '_wjecf_products_and', $wjecf_products_and );
+		
 		$wjecf_shipping_methods = isset( $_POST['wjecf_shipping_methods'] ) ? $_POST['wjecf_shipping_methods'] : '';
 		update_post_meta( $post_id, '_wjecf_shipping_methods', $wjecf_shipping_methods );		
 		
@@ -86,6 +117,24 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		if ( ! $valid ) {
 			return false;
 		}
+		
+		//Test if ALL products are in the cart (if AND-operator selected in stead of the default OR)
+		$products_and = get_post_meta( $coupon->id, '_wjecf_products_and', true ) == 'yes';
+		if ( $products_and && sizeof( $coupon->product_ids ) > 1 ) { // We use > 1, because if size == 1, 'AND' makes no difference		
+			//Get array of all cart product and variation ids
+			$cart_item_ids = array();
+			foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+				$cart_item_ids[] = $cart_item['product_id'];
+				$cart_item_ids[] = $cart_item['variation_id'];
+			}
+			//check if every single product is in the cart
+			foreach( $coupon->product_ids as $product_id ) {
+				if ( ! in_array( $product_id, $cart_item_ids ) ) {
+					return false;
+				}
+			}		
+		}
+		
 		
 		//Test restricted shipping methods
 		$shipping_method_ids = $this->get_shipping_method_ids( $coupon );

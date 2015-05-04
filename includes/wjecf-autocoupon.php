@@ -159,6 +159,7 @@ class WC_Jos_AutoCoupon_Controller{
 		}
 
 		//Test restricted emails
+		//See WooCommerce: class-wc-cart.php function check_customer_coupons
 		if ( is_array( $coupon->customer_email ) && sizeof( $coupon->customer_email ) > 0 ) {
 			$user_emails = array_map( 'sanitize_email', array_map( 'strtolower', $this->get_user_emails() ) );
 			$coupon_emails = array_map( 'sanitize_email', array_map( 'strtolower', $coupon->customer_email ) );
@@ -175,6 +176,7 @@ class WC_Jos_AutoCoupon_Controller{
 			return true;
 		}
 		//Test whether discount > 0
+		//See WooCommerce: class-wc-cart.php function get_discounted_price
 		foreach ( $woocommerce->cart->get_cart() as $cart_item) {
 			if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
 				if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {

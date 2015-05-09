@@ -30,12 +30,14 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		
 		//See WooCommerce class-wc-meta-box-coupon-data.php function ouput
 		
+		//=============================
 		//Title
-		echo "<h3 style='display:inline'>" . __( 'Extended Coupon Features', 'woocommerce-jos-autocoupon' ) . "</h3>\n";
+		echo "<h3 style='display:inline'>" . esc_html( __( 'Extended Coupon Features', 'woocommerce-jos-autocoupon' ) ). "</h3>\n";
 		printf( '<a href="%s" title="Support the development" target="_blank">', $this->get_donate_url() );
-		_e('Donate to the developer', 'woocommerce-jos-autocoupon' );
+		echo esc_html( __('Donate to the developer', 'woocommerce-jos-autocoupon' ) );
 		echo  "</a>\n";
 		
+		//=============================
 		// AND in stead of OR the products
 		woocommerce_wp_checkbox( array( 
 			'id' => '_wjecf_products_and', 
@@ -44,6 +46,7 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		) );
 		
 		
+		//=============================
 		//Trick to show AND or OR next to the product_ids field 		
 		$label_and = __( '(AND)', 'woocommerce-jos-autocoupon' );
 		$label_or  = __( '(OR)',  'woocommerce-jos-autocoupon' );
@@ -53,16 +56,17 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 			//Update AND or OR in product_ids label when checkbox value changes
 			jQuery("#_wjecf_products_and").click( 
 				function() { 
-					jQuery("#wjecf_products_and_label").text( 
-						jQuery("#_wjecf_products_and").attr('checked') ? "<?php echo $label_and; ?>" : "<?php echo $label_or; ?>"
+					jQuery("#wjecf_products_and_label").html( 
+						jQuery("#_wjecf_products_and").attr('checked') ? '<?php echo esc_js( $label_and ); ?>' : '<?php echo esc_js( $label_or ); ?>'
 					);
 			} );
 			//Append AND/OR to the product_ids label
-			jQuery(".form-field:has('[name=\"product_ids\"]') label").append( ' <strong><span id="wjecf_products_and_label"><?php echo $label; ?></span></strong>' );
+			jQuery(".form-field:has('[name=\"product_ids\"]') label").append( ' <strong><span id="wjecf_products_and_label"><?php echo esc_html( $label ); ?></span></strong>' );
 		</script>
 		<?php //End of the AND/OR trick
 
 		
+		//=============================
 		// Shipping methods
 		?>
 		<p class="form-field"><label for="wjecf_shipping_methods"><?php _e( 'Shipping methods', 'woocommerce-jos-autocoupon' ); ?></label>
@@ -78,10 +82,11 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		</select> <img class="help_tip" data-tip='<?php _e( 'One of these shipping methods must be selected in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
 		<?php		
 		
+		//=============================
 		// Payment methods
 		?>
 		<p class="form-field"><label for="wjecf_payment_methods"><?php _e( 'Payment methods', 'woocommerce-jos-autocoupon' ); ?></label>
-		<select id="wjecf_payment_methods" name="wjecf_payment_methods[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any shipping method', 'woocommerce-jos-autocoupon' ); ?>">
+		<select id="wjecf_payment_methods" name="wjecf_payment_methods[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any payment method', 'woocommerce-jos-autocoupon' ); ?>">
 			<?php
 				$payment_method_ids = (array) get_post_meta( $thepostid, '_wjecf_payment_methods', true );
 				//DONT USE: CAN CRASH IN UNKNOWN OCCASIONS // $payment_methods = WC()->payment_gateways->available_payment_gateways();

@@ -3,13 +3,16 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.0.0
+ * Version: 2.1.0-b1
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
+  2.1.0-b1:
+    - FEATURE: Allow auto coupons to be applied silently (without displaying a message)
+	- FIX: Changed the hooks used for application/removal of auto coupons
   2.0.0:
     - RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
     - FEATURE: Restrict coupons by payment method
@@ -51,9 +54,12 @@ require_once( 'includes/wjecf-coupon-extensions.php' );
  **/
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 	
-	add_action('plugins_loaded', function() {
-		load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
-	} );
+	if ( ! function_exists( 'wjce_load_plugin_textdomain' ) ) {
+		function wjce_load_plugin_textdomain() {
+			load_plugin_textdomain('woocommerce-jos-autocoupon', false, basename(dirname(__FILE__)) . '/languages/' );
+		}
+		add_action('plugins_loaded', 'wjce_load_plugin_textdomain');
+	}
 
 	$wjce_extended_coupon_features = new WC_Jos_Extended_Coupon_Features_Controller();
 	$wjce_autocoupon = new WC_Jos_AutoCoupon_Controller();

@@ -24,9 +24,11 @@ class WC_Jos_AutoCoupon_Controller{
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
 
 		//Frontend hooks
+		add_action( 'woocommerce_cart_updated',  array( &$this, 'update_matched_autocoupons' ) ); //added 2.1.0-b1
 		add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
-		add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
-		add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
+		//Removed 2.1.0-b1 No more neccessary since we use woocommerce_cart_updated
+		//add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
+		//add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
 		
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
@@ -43,18 +45,45 @@ class WC_Jos_AutoCoupon_Controller{
 
 	public function coupon_options() {
 		
+		//=============================
 		// Auto coupon checkbox
 		woocommerce_wp_checkbox( array(
 			'id'          => 'woocommerce-jos-autocoupon',
 			'label'       => __( 'Auto coupon', 'woocommerce-jos-autocoupon' ),
 			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customers cart if the coupon is applied.", 'woocommerce-jos-autocoupon' )
 		) );
-	
+
+		//=============================
+		// Apply without notice
+		woocommerce_wp_checkbox( array(
+			'id'          => '_wjecf_apply_silently',
+			'label'       => __( 'Apply silently', 'woocommerce-jos-autocoupon' ),
+			'description' => __( "Don't display a message when this coupon is automatically applied.", 'woocommerce-jos-autocoupon' ),
+		) );
+		
+		?>		
+		<script type="text/javascript">
+			//Hide/show when AUTO-COUPON value changes
+			function update_wjecf_apply_silently_field( animation ) { 
+					if ( animation === undefined ) animation = 'slow';
+					
+					if (jQuery("#woocommerce-jos-autocoupon").prop('checked')) {
+						jQuery("._wjecf_apply_silently_field").show( animation );
+					} else {
+						jQuery("._wjecf_apply_silently_field").hide( animation );
+					}
+			}
+			update_wjecf_apply_silently_field( 0 );	
+			
+			jQuery("#woocommerce-jos-autocoupon").click( update_wjecf_apply_silently_field );
+		</script>
+		<?php
+		
 	}
 	
 	public function process_shop_coupon_meta( $post_id, $post ) {
-		$autocoupon = isset( $_POST['woocommerce-jos-autocoupon'] ) ? 'yes' : 'no';
-		update_post_meta( $post_id, 'woocommerce-jos-autocoupon', $autocoupon );
+		update_post_meta( $post_id, 'woocommerce-jos-autocoupon', isset( $_POST['woocommerce-jos-autocoupon'] ) ? 'yes' : 'no' );
+		update_post_meta( $post_id, '_wjecf_apply_silently', isset( $_POST['_wjecf_apply_silently'] ) ? 'yes' : 'no' );
 	}	
 
 /* FRONTEND HOOKS */
@@ -123,7 +152,10 @@ class WC_Jos_AutoCoupon_Controller{
  */	
 	function update_matched_autocoupons() {
 		$this->log ( 'update_matched_autocoupons' );
-		if ( $this->_check_already_performed ) return;
+		if ( $this->_check_already_performed ) {
+			$this->log ( 'check already performed' );
+			return;
+		}
 		
 		global $woocommerce;
 		$this->remove_unmatched_autocoupons();
@@ -133,7 +165,8 @@ class WC_Jos_AutoCoupon_Controller{
 				if ( $this->coupon_can_be_applied($coupon) ) {
 					$this->log( sprintf( "Applying %s", $coupon_code ) );
 					$woocommerce->cart->add_discount( $coupon_code );				
-					$this->overwrite_success_message( $coupon );
+					$apply_silently = get_post_meta( $coupon->id, '_wjecf_apply_silently', true ) == 'yes';
+					$this->overwrite_success_message( $coupon, $apply_silently );
 				} else {
 					$this->log( sprintf( "Not applicable: %s", $coupon_code ) );
 				}
@@ -213,10 +246,14 @@ class WC_Jos_AutoCoupon_Controller{
 /**
  * Overwrite the default "Coupon added" notice with a more descriptive message.
  * @param  WC_Coupon $coupon The coupon data
+ * @param  bool      $remove_message_only If true the notice will be removed, and no notice will be shown.
  * @return void
  */
-	private function overwrite_success_message( $coupon ) {
+	private function overwrite_success_message( $coupon, $remove_message_only = false ) {
 		$succss_msg = $coupon->get_coupon_message( WC_Coupon::WC_COUPON_SUCCESS );
+		
+		//If ajax, remove only
+		$remove_message_only |= defined('DOING_AJAX') && DOING_AJAX;
 		
 		$new_succss_msg = sprintf(
 			__("Discount applied: %s", 'woocommerce-jos-autocoupon'), 
@@ -226,6 +263,9 @@ class WC_Jos_AutoCoupon_Controller{
 		//Compatibility woocommerce-2-1-notice-api
 		if ( function_exists('wc_get_notices') ) {
 			$all_notices = wc_get_notices();
+			if ( ! isset( $all_notices['success'] ) ) {
+				$all_notices['success'] = array();
+			}
 			$messages = $all_notices['success'];
 		} else {
 			$messages = $woocommerce->messages;
@@ -235,7 +275,7 @@ class WC_Jos_AutoCoupon_Controller{
 		for( $y=0; $y < $sizeof_messages; $y++ ) { 
 			if ( $messages[$y] == $succss_msg ) {
 				if ( isset($all_notices) ) {
-					if (defined('DOING_AJAX') && DOING_AJAX) {
+					if ( $remove_message_only ) {
 						unset ( $all_notices['success'][$y] );
 					} else {
 						$all_notices['success'][$y] = $new_succss_msg;
@@ -243,7 +283,7 @@ class WC_Jos_AutoCoupon_Controller{
 
 					WC()->session->set( 'wc_notices', $all_notices );
 				} else {
-					if (defined('DOING_AJAX') && DOING_AJAX) {
+					if ( $remove_message_only ) {
 						unset ( $messages[$y] );
 					} else {
 						$messages[$y] = $new_succss_msg;

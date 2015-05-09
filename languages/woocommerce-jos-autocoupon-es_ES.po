@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: WooCommerce auto added coupons 1.1.3.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-auto-"
 "added-coupons\n"
-"POT-Creation-Date: 2015-05-04 23:28+0100\n"
-"PO-Revision-Date: 2015-05-04 23:32+0100\n"
+"POT-Creation-Date: 2015-05-09 18:32+0100\n"
+"PO-Revision-Date: 2015-05-09 18:33+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Poedit-Basepath: C:\\lamp\\www\\qrvm_woo\\wp-content\\plugins\\\n"
 "X-Poedit-SearchPath-0: woocommerce-auto-added-coupons\n"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:49
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
 msgid "Auto coupon"
 msgstr "Aplicar cupón automaticamente"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:51
 msgid ""
 "Automatically add the coupon to the cart if the restrictions are met. Please "
 "enter a description when you check this box, the description will be shown "
@@ -31,28 +31,36 @@ msgstr ""
 "sean cumplidos. Por favor ingrese una descripción, ya que este será mostrado "
 "al cliente cuando el cupón esté aplicado."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:111
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:58
+msgid "Apply silently"
+msgstr "Aplicar sin mensaje"
+
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:59
+msgid "Don't display a message when this coupon is automatically applied."
+msgstr "No mostrar mensaje cuando el cupon esté aplicado automaticamente."
+
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:138
 msgid "Free shipping coupon"
 msgstr "Cupón para envío gratis"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:222
+#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:251
 #, php-format
 msgid "Discount applied: %s"
 msgstr "Descuento aplicado: %s"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:34
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:35
 msgid "Extended Coupon Features"
 msgstr "Más opciones para cupones"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:36
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:37
 msgid "Donate to the developer"
 msgstr "Hacer una donación"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:42
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:44
 msgid "AND Products (not OR)"
 msgstr "TODOS los productos"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:43
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:45
 msgid ""
 "Check this box if ALL of the products (see above) must be in the cart to use "
 "this coupon (in stead of only one of the products)."
@@ -61,35 +69,39 @@ msgstr ""
 "el carrito para poder usar este cupón (en lugar de solo uno de los "
 "productos)."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:48
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:51
 msgid "(AND)"
 msgstr "(TODOS)"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:49
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:52
 msgid "(OR)"
 msgstr "(UNO)"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:68
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:72
 msgid "Shipping methods"
 msgstr "Métodos de envío"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:69
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:84
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:73
 msgid "Any shipping method"
 msgstr "Métodos de pago"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:78
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:82
 msgid ""
 "One of these shipping methods must be selected in order for this coupon to "
 "be valid."
 msgstr ""
 "Uno de estos métodos de pago tiene que ser seleccionado para usar este cupón."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:83
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:88
 msgid "Payment methods"
 msgstr "Métodos de pago"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:95
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:89
+#, fuzzy
+msgid "Any payment method"
+msgstr "Métodos de pago"
+
+#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:100
 msgid ""
 "One of these payment methods must be selected in order for this coupon to be "
 "valid."

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce Extended Coupon Features 2.00\n"
-"POT-Creation-Date: 2015-05-03 21:01+0100\n"
-"PO-Revision-Date: 2015-05-03 21:02+0100\n"
+"POT-Creation-Date: 2015-05-09 18:12+0100\n"
+"PO-Revision-Date: 2015-05-09 18:12+0100\n"
 "Last-Translator: \n"
 "Language-Team: Jos Koenis\n"
 "Language: EN\n"
@@ -11,59 +11,84 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 "X-Poedit-KeywordsList: __;_e\n"
-"X-Poedit-Basepath: .\n"
+"X-Poedit-Basepath: C:\\lamp\\www\\qrvm_woo\\\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-SearchPath-0: C:\\lamp\\www\\qrvm_woo\\wp-content\\plugins"
-"\\woocommerce-auto-added-coupons\n"
+"X-Poedit-SearchPath-0: wp-content\\plugins\\woocommerce-auto-added-coupons\n"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:49
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
 msgid "Auto coupon"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:51
 msgid ""
 "Automatically add the coupon to the cart if the restrictions are met. Please "
 "enter a description when you check this box, the description will be shown "
 "in the customers cart if the coupon is applied."
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:111
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:58
+msgid "Apply silently"
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:59
+msgid "Don't display a message when this coupon is automatically applied."
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:138
 msgid "Free shipping coupon"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:218
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:251
 #, php-format
 msgid "Discount applied: %s"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:32
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:35
 msgid "Extended Coupon Features"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:34
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:37
 msgid "Donate to the developer"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:39
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:44
+msgid "AND Products (not OR)"
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:45
+msgid ""
+"Check this box if ALL of the products (see above) must be in the cart to use "
+"this coupon (in stead of only one of the products)."
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:51
+msgid "(AND)"
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:52
+msgid "(OR)"
+msgstr ""
+
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:72
 msgid "Shipping methods"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:40
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:55
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:73
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:89
 msgid "Any shipping method"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:49
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:82
 msgid ""
 "One of these shipping methods must be selected in order for this coupon to "
 "be valid."
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:54
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:88
 msgid "Payment methods"
 msgstr ""
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:64
+#: wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:100
 msgid ""
 "One of these payment methods must be selected in order for this coupon to be "
 "valid."

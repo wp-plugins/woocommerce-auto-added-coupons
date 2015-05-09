@@ -30,12 +30,12 @@ class WC_Jos_AutoCoupon_Controller{
 		//add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
 		//add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
 		
+		//Last check for coupons with restricted_emails
+		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'fetch_billing_email' ), 10 ); // AJAX One page checkout  // 
+		//add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
+
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
-		
-		//Last check for coupons with restricted_emails
-		//DONT USE: Breaks cart preview update //add_action( 'woocommerce_checkout_update_order_review', array( $this, 'checkout_update_order_review' ), 10 ); // AJAX One page checkout  // 
-		add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
 
 		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' )); //Coupon through url
 
@@ -328,7 +328,7 @@ class WC_Jos_AutoCoupon_Controller{
 				$this->_user_emails[] = $current_user->user_email;
 			}
 		}
-		$this->log( "User emails: ", join( ",", $this->_user_emails ) );
+		$this->log( "User emails: " . join( ",", $this->_user_emails ) );
 		return $this->_user_emails;		
 	}
 
@@ -342,6 +342,7 @@ class WC_Jos_AutoCoupon_Controller{
 		if ( ! is_array( $append_emails ) ) {
 			$append_emails = array( $append_emails );
 		}
+		//$this->log('Append emails: ' . join( ',', $append_emails ) );
 		
 		$this->_user_emails = array_merge( $this->get_user_emails(), $append_emails );
 	}
@@ -354,22 +355,23 @@ class WC_Jos_AutoCoupon_Controller{
  * @return void
  */
 	public function after_checkout_validation( $posted ) {
-		$this->log ( 'update_matched_autocoupons' );
-		// $this->log ( sprintf( "After checkout: %s", print_r ( $posted, true ) ) );
-		$this->get_user_emails();
+		$this->fetch_billing_email ( $posted );	
+		$this->update_matched_autocoupons();
+	}
+	
+	public function fetch_billing_email( $post_data ) {
+		//post_data can be an array, or a query=string&like=this
+		if ( ! is_array( $post_data ) ) {
+			parse_str( $post_data, $posted );
+		} else {
+			$posted = $post_data;
+		}
+		
 		if ( isset ( $posted['billing_email'] ) ) {
 			$this->append_user_emails( $posted['billing_email'] );
 		}
 		
-		$this->update_matched_autocoupons();
-	}
-
-	//Same as after_checkout_validation, only post_data is a query=string&like=this that must be converted to an array
-	public function checkout_update_order_review( $post_data ) {
-		$posted = array();
-		parse_str( $post_data, $posted );
-		$this->after_checkout_validation( $posted );
-	}
+	}	
 	
 /**
  * Get a list of all auto coupon codes
@@ -406,6 +408,6 @@ class WC_Jos_AutoCoupon_Controller{
 	}	
 	
 	private function log ( $string ) {
-		// file_put_contents ( "/lamp/www/logfile.log", current_filter() . ": " . $string . "\n" , FILE_APPEND );
+		// file_put_contents ( "/lamp/www/logfile.log", date("Y-m-d | h:i:sa") . " " . current_filter() . ": " . $string . "\n" , FILE_APPEND );
 	}
 }

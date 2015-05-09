@@ -13,6 +13,7 @@
   2.1.0-b1:
     - FEATURE: Allow auto coupons to be applied silently (without displaying a message)
 	- FIX: Changed the hooks used for application/removal of auto coupons
+	- FIX: 2.0.0 broke compatibility with PHP versions older than 5.3
   2.0.0:
     - RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
     - FEATURE: Restrict coupons by payment method

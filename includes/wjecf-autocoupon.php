@@ -25,13 +25,13 @@ class WC_Jos_AutoCoupon_Controller{
 
 		//Frontend hooks
 		add_action( 'woocommerce_cart_updated',  array( &$this, 'update_matched_autocoupons' ) ); //added 2.1.0-b1
-		add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
-		//Removed 2.1.0-b1 No more neccessary since we use woocommerce_cart_updated
+		//Removed 2.1.0-b1 Not neccessary since we use woocommerce_cart_updated
+		//add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
 		//add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
 		//add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
 		
 		//Last check for coupons with restricted_emails
-		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'fetch_billing_email' ), 10 ); // AJAX One page checkout  // 
+		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'fetch_billing_email' ), 10 ); // AJAX One page checkout 
 		//add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
 
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
@@ -158,13 +158,14 @@ class WC_Jos_AutoCoupon_Controller{
 		}
 		
 		global $woocommerce;
-		$this->remove_unmatched_autocoupons();
+		$calc_needed = $this->remove_unmatched_autocoupons();
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( $this->coupon_can_be_applied($coupon) ) {
 					$this->log( sprintf( "Applying %s", $coupon_code ) );
 					$woocommerce->cart->add_discount( $coupon_code );				
+					$calc_needed = false; //Already done by adding the discount
 					$apply_silently = get_post_meta( $coupon->id, '_wjecf_apply_silently', true ) == 'yes';
 					$this->overwrite_success_message( $coupon, $apply_silently );
 				} else {
@@ -173,6 +174,11 @@ class WC_Jos_AutoCoupon_Controller{
 			}
 		}
 		$this->_check_already_performed = true;
+		
+		if ( $calc_needed ) {
+			$woocommerce->cart->calculate_totals();
+		}
+		
 	}
 	
 /**
@@ -227,20 +233,23 @@ class WC_Jos_AutoCoupon_Controller{
 /**
  * Remove unmatched autocoupons. No message will be shown. 
  * NOTE: This function must be called before WooCommerce removes the coupon, to inhibit WooCommerces "coupon not valid"-message!
- * @return void
+ * @return bool True if coupons were removed, otherwise False;
  */
 	function remove_unmatched_autocoupons() {
 		global $woocommerce;
 
+		$calc_needed = false;
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {		
 			if ( $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( ! $this->coupon_can_be_applied($coupon) ) {
 					$this->log( sprintf( "Removing %s", $coupon_code ) );
 					WC()->cart->remove_coupon( $coupon_code );  
+					$calc_needed = true;
 				}
 			}
 		}
+		return $calc_needed;
 	}	
 	
 /**
@@ -327,6 +336,9 @@ class WC_Jos_AutoCoupon_Controller{
 				$current_user   = wp_get_current_user();
 				$this->_user_emails[] = $current_user->user_email;
 			}
+			
+			if ( isset( $_POST['billing_email'] ) )
+				$this->_user_emails[] = $_POST['billing_email'];
 		}
 		$this->log( "User emails: " . join( ",", $this->_user_emails ) );
 		return $this->_user_emails;		
@@ -342,9 +354,8 @@ class WC_Jos_AutoCoupon_Controller{
 		if ( ! is_array( $append_emails ) ) {
 			$append_emails = array( $append_emails );
 		}
-		//$this->log('Append emails: ' . join( ',', $append_emails ) );
-		
 		$this->_user_emails = array_merge( $this->get_user_emails(), $append_emails );
+		$this->log('Append emails: ' . join( ',', $append_emails ) );
 	}
 	
 /**
@@ -354,10 +365,10 @@ class WC_Jos_AutoCoupon_Controller{
  * @param $posted array Billing data 
  * @return void
  */
-	public function after_checkout_validation( $posted ) {
-		$this->fetch_billing_email ( $posted );	
-		$this->update_matched_autocoupons();
-	}
+	// public function after_checkout_validation( $posted ) {
+		// $this->fetch_billing_email ( $posted );	
+		// $this->update_matched_autocoupons();
+	// }
 	
 	public function fetch_billing_email( $post_data ) {
 		//post_data can be an array, or a query=string&like=this
@@ -408,6 +419,6 @@ class WC_Jos_AutoCoupon_Controller{
 	}	
 	
 	private function log ( $string ) {
-		// file_put_contents ( "/lamp/www/logfile.log", date("Y-m-d | h:i:sa") . " " . current_filter() . ": " . $string . "\n" , FILE_APPEND );
+		file_put_contents ( "/lamp/www/logfile.log", date("Y-m-d | h:i:sa") . " " . current_filter() . ": " . $string . "\n" , FILE_APPEND );
 	}
 }

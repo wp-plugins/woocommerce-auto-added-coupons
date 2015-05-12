@@ -3,17 +3,19 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.1.0-b1
+ * Version: 2.1.0-b2
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
-  2.1.0-b1:
-    - FEATURE: Allow auto coupons to be applied silently (without displaying a message)
-	- FIX: Changed the hooks used for application/removal of auto coupons
+  2.1.0-b2:
+	- FEATURE: Allow auto coupons to be applied silently (without displaying a message)
 	- FIX: 2.0.0 broke compatibility with PHP versions older than 5.3
+	- FIX: Changed method to fetch email addresses for auto coupon with email address restriction
+	- ADDED: Filter wjecf_coupon_has_a_value (An auto coupon will not be applied if this returns false)
+	- ADDED: Filter wjecf_coupon_can_be_applied (An auto coupon will not be applied if this returns false)
   2.0.0:
     - RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"
     - FEATURE: Restrict coupons by payment method

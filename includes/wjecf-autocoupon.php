@@ -24,15 +24,13 @@ class WC_Jos_AutoCoupon_Controller{
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
 
 		//Frontend hooks
-		add_action( 'woocommerce_cart_updated',  array( &$this, 'update_matched_autocoupons' ) ); //added 2.1.0-b1
-		//Removed 2.1.0-b1 Not neccessary since we use woocommerce_cart_updated
-		//add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
-		//add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
-		//add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
+		//add_action( 'woocommerce_cart_updated',  array( &$this, 'update_matched_autocoupons' ) ); //experiment 2.1.0-b1
+		add_action( 'woocommerce_check_cart_items',  array( &$this, 'update_matched_autocoupons' ) , 0 ); //Remove coupon before WC does it and shows a message
+		add_action( 'woocommerce_before_cart_totals',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping method
+		add_action( 'woocommerce_review_order_before_cart_contents',  array( &$this, 'update_matched_autocoupons' ) ); //When cart is updated after changing shipping or payment method
 		
 		//Last check for coupons with restricted_emails
 		add_action( 'woocommerce_checkout_update_order_review', array( $this, 'fetch_billing_email' ), 10 ); // AJAX One page checkout 
-		//add_action( 'woocommerce_after_checkout_validation', array( $this, 'after_checkout_validation' ), 0 ); // After checkout / before payment
 
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
@@ -162,7 +160,7 @@ class WC_Jos_AutoCoupon_Controller{
 		foreach ( $this->get_all_auto_coupons() as $coupon_code ) {
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
-				if ( $this->coupon_can_be_applied($coupon) ) {
+				if ( $this->coupon_can_be_applied($coupon) && $this->coupon_has_a_value( $coupon ) ) {
 					$this->log( sprintf( "Applying %s", $coupon_code ) );
 					$woocommerce->cart->add_discount( $coupon_code );				
 					$calc_needed = false; //Already done by adding the discount
@@ -188,46 +186,59 @@ class WC_Jos_AutoCoupon_Controller{
 	function coupon_can_be_applied($coupon) {
 		global $woocommerce;
 		
+		$can_be_applied = true;
+		
 		//Test validity
 		if ( ! $coupon->is_valid() ) {
-			return false;
+			$can_be_applied = false;
 		}
 		//Test individual use
-		if ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
-			return false;
+		 elseif ( $coupon->individual_use == 'yes' &&  count( $woocommerce->cart->applied_coupons ) != 0 ) {
+			$can_be_applied = false;
 		}
-
 		//Test restricted emails
 		//See WooCommerce: class-wc-cart.php function check_customer_coupons
-		if ( is_array( $coupon->customer_email ) && sizeof( $coupon->customer_email ) > 0 ) {
+		elseif ( is_array( $coupon->customer_email ) && sizeof( $coupon->customer_email ) > 0 ) {
 			$user_emails = array_map( 'sanitize_email', array_map( 'strtolower', $this->get_user_emails() ) );
 			$coupon_emails = array_map( 'sanitize_email', array_map( 'strtolower', $coupon->customer_email ) );
 			
 			if ( 0 == sizeof( array_intersect( $user_emails, $coupon_emails ) ) ) {
-				return false;
+				$can_be_applied = false;
 			}
 		}
 		
-		//===========================================
-		//Can be applied. Now test if it has a value
+		return apply_filters( 'wjecf_coupon_can_be_applied', $can_be_applied, $coupon );
+		
+	}
+
+	/**
+	 * Does the coupon have a value? (autocoupon should not be applied if it has no value)
+	 * @param  WC_Coupon $coupon The coupon data
+	 * @return bool True if it has a value (discount, free shipping, whatever) otherwise false)
+	 **/
+	function coupon_has_a_value($coupon) {
+		
+		$has_a_value = false;
 		
 		if ( $coupon->enable_free_shipping() ) {
-			return true;
-		}
-		//Test whether discount > 0
-		//See WooCommerce: class-wc-cart.php function get_discounted_price
-		foreach ( $woocommerce->cart->get_cart() as $cart_item) {
-			if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
-				if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {
-					return true;
+			$has_a_value = true;
+		} else {
+			//Test whether discount > 0
+			//See WooCommerce: class-wc-cart.php function get_discounted_price
+			global $woocommerce;
+			foreach ( $woocommerce->cart->get_cart() as $cart_item) {
+				if  ( $coupon->is_valid_for_cart() || $coupon->is_valid_for_product( $cart_item['data'], $cart_item ) ) {
+					if ( $coupon->get_discount_amount( $cart_item['data']->price, $cart_item ) > 0 ) {
+						$has_a_value = true;
+						break;
+					}
 				}
 			}
 		}
 		
-		return false;		
+		return apply_filters( 'wjecf_coupon_has_a_value', $has_a_value, $coupon );
+		
 	}
-	
-	
 	
 	
 /**
@@ -354,21 +365,9 @@ class WC_Jos_AutoCoupon_Controller{
 		if ( ! is_array( $append_emails ) ) {
 			$append_emails = array( $append_emails );
 		}
-		$this->_user_emails = array_merge( $this->get_user_emails(), $append_emails );
+		$this->_user_emails = array_unique( array_merge( $this->get_user_emails(), $append_emails ) );
 		$this->log('Append emails: ' . join( ',', $append_emails ) );
 	}
-	
-/**
- * After checkout validation
- * Get billing email for coupon with restricted_emails
- * Append matching coupons with restricted emails
- * @param $posted array Billing data 
- * @return void
- */
-	// public function after_checkout_validation( $posted ) {
-		// $this->fetch_billing_email ( $posted );	
-		// $this->update_matched_autocoupons();
-	// }
 	
 	public function fetch_billing_email( $post_data ) {
 		//post_data can be an array, or a query=string&like=this
@@ -390,7 +389,7 @@ class WC_Jos_AutoCoupon_Controller{
  */		
 	private function get_all_auto_coupons() {
 	
-		if ( !is_array($this->_autocoupon_codes) ) {
+		if ( ! is_array( $this->_autocoupon_codes ) ) {
 			$this->_autocoupon_codes = array();
 			
 			$query_args = array(
@@ -418,7 +417,8 @@ class WC_Jos_AutoCoupon_Controller{
 		return $this->_autocoupon_codes;
 	}	
 	
+	//FOR DEBUGGING ONLY
 	private function log ( $string ) {
-		file_put_contents ( "/lamp/www/logfile.log", date("Y-m-d | h:i:sa") . " " . current_filter() . ": " . $string . "\n" , FILE_APPEND );
+		// file_put_contents ( "/lamp/www/logfile.log", date("Y-m-d | h:i:sa") . " " . current_filter() . ": " . $string . "\n" , FILE_APPEND );
 	}
 }

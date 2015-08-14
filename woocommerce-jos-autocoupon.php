@@ -3,14 +3,16 @@
  * Plugin Name: WooCommerce Extended Coupon Features
  * Plugin URI: http://wordpress.org/plugins/woocommerce-auto-added-coupons
  * Description: Additional functionality for WooCommerce Coupons: Apply certain coupons automatically, allow applying coupons via an url, etc...
- * Version: 2.1.0-b3
+ * Version: 2.1.0-b4
  * Author: Jos Koenis
  * License: GPL2
  */
  
  /*
  Change history:
-  2.1.0-b3:
+  2.1.0-b4:
+	- FIX: Lowered execution priority for apply_coupon by url for combinations with add-to-cart.
+	- FEATURE: New coupon feature: Excluded customer role restriction
 	- FEATURE: New coupon feature: Customer / customer role restriction
 	- FEATURE: New coupon feature: Minimum quantity of matching products
 	- TWEAK: Moved all settings to the 'Extended features'-tab on the admin page.

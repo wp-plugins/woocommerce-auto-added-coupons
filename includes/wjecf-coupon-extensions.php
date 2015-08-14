@@ -151,9 +151,6 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		<input type="hidden" class="wc-customer-search" data-multiple="true" style="width: 50%;" name="wjecf_customer_ids" data-placeholder="<?php _e( 'Any customer', 'woocommerce' ); ?>" data-action="woocommerce_json_search_customers" data-selected="<?php
 			$coupon_customer_ids = $this->get_coupon_customer_ids( $thepostid );
 			$json_ids    = array();
-			//$r = get_post_meta( $thepostid, '_wjecf_customer_ids', true );
-			//var_dump($r);
-			//die("IDS:");
 			
 			foreach ( $coupon_customer_ids as $customer_id ) {
 				$customer = get_userdata( $customer_id );
@@ -172,7 +169,6 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		<p class="form-field"><label for="wjecf_customer_roles"><?php _e( 'Customer roles', 'woocommerce-jos-autocoupon' ); ?></label>
 		<select id="wjecf_customer_roles" name="wjecf_customer_roles[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any role', 'woocommerce-jos-autocoupon' ); ?>">
 			<?php			
-				//$coupon_customer_roles = (array) get_post_meta( $thepostid, '_wjecf_customer_roles', true );
 				$coupon_customer_roles = $this->get_coupon_customer_roles( $thepostid );
 
 				$available_customer_roles = array_reverse( get_editable_roles() );
@@ -185,7 +181,26 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 				}
 			?>
 		</select> <img class="help_tip" data-tip='<?php _e( 'The customer must have one of these roles in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
-		<?php		
+		<?php	
+
+		//=============================
+		// Excluded user roles
+		?>
+		<p class="form-field"><label for="wjecf_excluded_customer_roles"><?php _e( 'Excluded customer roles', 'woocommerce-jos-autocoupon' ); ?></label>
+		<select id="wjecf_customer_roles" name="wjecf_excluded_customer_roles[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any role', 'woocommerce-jos-autocoupon' ); ?>">
+			<?php			
+				$coupon_excluded_customer_roles = $this->get_coupon_excluded_customer_roles( $thepostid );
+
+				foreach ( $available_customer_roles as $role_id => $role ) {
+					$role_name = translate_user_role($role['name'] );
+	
+					echo '<option value="' . esc_attr( $role_id ) . '"'
+					. selected( in_array( $role_id, $coupon_excluded_customer_roles ), true, false ) . '>'
+					. esc_html( $role_name ) . '</option>';
+				}
+			?>
+		</select> <img class="help_tip" data-tip='<?php _e( 'The customer must not have one of these roles in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
+		<?php	
 	}
 	
 	public function process_shop_coupon_meta( $post_id, $post ) {
@@ -206,6 +221,9 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 
 		$wjecf_customer_roles    = isset( $_POST['wjecf_customer_roles'] ) ? $_POST['wjecf_customer_roles'] : '';
 		update_post_meta( $post_id, '_wjecf_customer_roles', $wjecf_customer_roles );	
+
+		$wjecf_excluded_customer_roles    = isset( $_POST['wjecf_excluded_customer_roles'] ) ? $_POST['wjecf_excluded_customer_roles'] : '';
+		update_post_meta( $post_id, '_wjecf_excluded_customer_roles', $wjecf_excluded_customer_roles );	
 		
 	}	
 
@@ -295,10 +313,23 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 				return false;
 			}
 		}
+		
+		//============================
+		//Test excluded user roles
+		$coupon_excluded_customer_roles = $this->get_coupon_excluded_customer_roles( $coupon->id );
+		if ( sizeof( $coupon_excluded_customer_roles ) > 0 ) {		
+			$user = wp_get_current_user();
 
+			//Excluded customer roles
+			if ( array_intersect( $user->roles, $coupon_excluded_customer_roles ) ) {
+				return false;
+			}
+		}
 		
 		return true;			
 	}
+	
+	
 	
 	//Test if coupon is valid for the product 
 	// (this function is used to count the quantity of matching products)
@@ -427,7 +458,21 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		}
 		
 		return $v;
-	}		
+	}	
+
+/**
+ * Get array of the excluded customer role ids.
+ * @param  int $coupon_id The coupon id
+ * @return array  Id's (string) of the excluded customer roles or an empty array.
+ */	
+	private function get_coupon_excluded_customer_roles($coupon_id) {
+		$v = get_post_meta( $coupon_id, '_wjecf_excluded_customer_roles', true );
+		if ($v == '') {
+			$v = array();
+		}
+		
+		return $v;
+	}	
 	
 	public static function get_donate_url() {
 		return "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted";

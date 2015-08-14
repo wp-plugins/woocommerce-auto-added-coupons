@@ -35,7 +35,7 @@ class WC_Jos_AutoCoupon_Controller{
 		add_filter('woocommerce_cart_totals_coupon_label', array( &$this, 'coupon_label' ), 10, 2 );
 		add_filter('woocommerce_cart_totals_coupon_html', array( &$this, 'coupon_html' ), 10, 2 );		
 
-		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' )); //Coupon through url
+		add_action( 'wp_loaded', array( &$this, 'coupon_by_url' ), 23); //Coupon through url
 
 	}
 	

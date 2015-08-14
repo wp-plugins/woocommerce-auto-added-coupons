@@ -2,8 +2,8 @@
 Contributors: josk79
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQBCS2QHRY&lc=NL&item_name=Jos%20Koenis&item_number=wordpress%2dplugin&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: woocommerce, coupons, discount
-Requires at least: 3.0.1
-Tested up to: 4.2.1
+Requires at least: 4.0.0
+Tested up to: 4.2.4
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -42,7 +42,7 @@ Apply coupon through an url like this:
 Voila! Any coupon can be applied this way.
 
 
-This plugin has been tested with WordPress 4.2.1 and WooCommerce 2.3.8. Also in combination with WPML and qTranslate-X.
+This plugin has been tested with WordPress 4.2.4 and WooCommerce 2.4.1. Also in combination with WPML and qTranslate-X.
 
 == Installation ==
 
@@ -91,7 +91,9 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
-= 2.1.0-b3 =
+= 2.1.0-b4 =
+* FIX: Lowered execution priority for apply_coupon by url for combinations with add-to-cart.
+* FEATURE: New coupon feature: Excluded customer role restriction
 * FEATURE: New coupon feature: Customer / customer role restriction
 * FEATURE: New coupon feature: Minimum quantity of matching products
 * TWEAK: Moved all settings to the 'Extended features'-tab on the admin page.

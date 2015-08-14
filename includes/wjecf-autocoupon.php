@@ -20,7 +20,7 @@ class WC_Jos_AutoCoupon_Controller{
 		$this->log( $_SERVER['REQUEST_URI'] );
 
 		//Admin hooks
-		add_action( 'woocommerce_coupon_options_usage_restriction', array( $this, 'coupon_options' ), 10, 0 );
+		add_action( 'wjecf_woocommerce_coupon_options_extended_features', array( $this, 'admin_coupon_options_extended_features' ), 20, 0 );
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
 
 		//Frontend hooks
@@ -41,14 +41,19 @@ class WC_Jos_AutoCoupon_Controller{
 	
 /* ADMIN HOOKS */
 
-	public function coupon_options() {
+	public function admin_coupon_options_extended_features() {
+		
+		//=============================
+		//Title
+		echo "<h3 style='display:inline'>" . esc_html( __( 'Auto coupon', 'woocommerce-jos-autocoupon' ) ). "</h3>\n";
+
 		
 		//=============================
 		// Auto coupon checkbox
 		woocommerce_wp_checkbox( array(
 			'id'          => 'woocommerce-jos-autocoupon',
 			'label'       => __( 'Auto coupon', 'woocommerce-jos-autocoupon' ),
-			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customers cart if the coupon is applied.", 'woocommerce-jos-autocoupon' )
+			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customer's cart if the coupon is applied.", 'woocommerce-jos-autocoupon' )
 		) );
 
 		//=============================

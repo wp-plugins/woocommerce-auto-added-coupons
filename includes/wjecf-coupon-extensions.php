@@ -4,6 +4,7 @@
 defined('ABSPATH') or die();
 
 class WC_Jos_Extended_Coupon_Features_Controller {
+	private $options = false;
 	
 	public function __construct() {    
 		add_action('init', array( &$this, 'controller_init' ));
@@ -13,19 +14,64 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		if ( ! class_exists('WC_Coupon') ) {
 			return;
 		}
+		
+		$this->init_options();
+		
+		//Admin hooks
+        add_action( 'admin_init', array( &$this, 'admin_init' ) );
 
+		//Frontend hooks
+		add_filter('woocommerce_coupon_is_valid', array( &$this, 'coupon_is_valid' ), 10, 2 );		
+	}
+	
+	public function init_options() {
+        $this->options = get_option( 'wjecf_options' );
+		if (false === $this->options) {
+			$this->options = array( 'db_version' => 0 );
+		}
+	}
+	
+	//Upgrade options on version change
+	public function auto_upgrade_options() {
+		$current_db_version = 1;		
+		//Check version
+		if ( $this->options['db_version'] < $current_db_version ) {
+			global $wpdb;
+			
+			//DB_VERSION 1: Since 2.1.0-b5
+			if ($this->options['db_version'] < 1) {
+				//RENAME meta_key _wjecf_matching_product_qty TO _wjecf_min_matching_product_qty
+                $where = array("meta_key" => "_wjecf_matching_product_qty");
+				$set = array('meta_key' => "_wjecf_min_matching_product_qty");
+				$wpdb->update( _get_meta_table('post'), $set, $where );
+				
+				//RENAME meta_key woocommerce-jos-autocoupon TO _wjecf_is_auto_coupon
+                $where = array("meta_key" => "woocommerce-jos-autocoupon");
+				$set = array('meta_key' => "_wjecf_is_auto_coupon");
+				$wpdb->update( _get_meta_table('post'), $set, $where );				
+				//Now we're version 1
+				$this->options['db_version'] = 1;
+			}
+			
+			// Write options to database
+            update_option( 'wjecf_options' , $this->options, false );
+		}
+	}
+	
+
+	
+/* ADMIN HOOKS */
+	public function admin_init() {
+		//Upgrade options on version change
+		$this->auto_upgrade_options();
+		
 		//Admin hooks
 		add_filter( 'woocommerce_coupon_data_tabs', array( $this, 'admin_coupon_options_tabs' ), 10, 1);
 		add_action( 'woocommerce_coupon_data_panels', array( $this, 'admin_coupon_options_panels' ), 10, 0 );
 		
 		add_action( 'wjecf_woocommerce_coupon_options_extended_features', array( $this, 'admin_coupon_options_extended_features' ), 10, 0 );
 		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );		
-		
-		//Frontend hooks
-		add_filter('woocommerce_coupon_is_valid', array( &$this, 'coupon_is_valid' ), 10, 2 );		
 	}
-	
-/* ADMIN HOOKS */
 
 	//Add panels to the coupon option page
 	public function admin_coupon_options_panels() {
@@ -76,13 +122,23 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		
 		// Minimum quantity of matching products (product/category)
 		woocommerce_wp_text_input( array( 
-			'id' => '_wjecf_matching_product_qty', 
-			'label' => __( 'Minimum quantity of matching products', 'woocommerce' ), 
+			'id' => '_wjecf_min_matching_product_qty', 
+			'label' => __( 'Minimum quantity of matching products', 'woocommerce-jos-autocoupon' ), 
 			'placeholder' => __( 'No minimum', 'woocommerce' ), 
 			'description' => __( 'Minimum quantity of the products that match the given product or category restrictions (see tab \'usage restriction\'). If no product or category restrictions are specified, the total number of products is used.', 'woocommerce-jos-autocoupon' ), 
 			'data_type' => 'decimal', 
 			'desc_tip' => true
 		) );
+		
+		// Minimum quantity of matching products (product/category)
+		woocommerce_wp_text_input( array( 
+			'id' => '_wjecf_max_matching_product_qty', 
+			'label' => __( 'Maximum quantity of matching products', 'woocommerce-jos-autocoupon' ), 
+			'placeholder' => __( 'No maximum', 'woocommerce' ), 
+			'description' => __( 'Maximum quantity of the products that match the given product or category restrictions (see tab \'usage restriction\'). If no product or category restrictions are specified, the total number of products is used.', 'woocommerce-jos-autocoupon' ), 
+			'data_type' => 'decimal', 
+			'desc_tip' => true
+		) );		
 		
 		//=============================
 		//Trick to show AND or OR next to the product_ids field 		
@@ -147,8 +203,8 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		//=============================
 		// User ids
 		?>
-		<p class="form-field"><label><?php _e( 'Customers', 'woocommerce' ); ?></label>
-		<input type="hidden" class="wc-customer-search" data-multiple="true" style="width: 50%;" name="wjecf_customer_ids" data-placeholder="<?php _e( 'Any customer', 'woocommerce' ); ?>" data-action="woocommerce_json_search_customers" data-selected="<?php
+		<p class="form-field"><label><?php _e( 'Allowed Customers', 'woocommerce-jos-autocoupon' ); ?></label>
+		<input type="hidden" class="wc-customer-search" data-multiple="true" style="width: 50%;" name="wjecf_customer_ids" data-placeholder="<?php _e( 'Any customer', 'woocommerce-jos-autocoupon' ); ?>" data-action="woocommerce_json_search_customers" data-selected="<?php
 			$coupon_customer_ids = $this->get_coupon_customer_ids( $thepostid );
 			$json_ids    = array();
 			
@@ -160,13 +216,15 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 			}
 
 			echo esc_attr( json_encode( $json_ids ) );
-		?>" value="<?php echo implode( ',', array_keys( $json_ids ) ); ?>" /> <img class="help_tip" data-tip='<?php _e( 'Coupon only applies to these customers.', 'woocommerce' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
+		?>" value="<?php echo implode( ',', array_keys( $json_ids ) ); ?>" /> <img class="help_tip" data-tip='<?php 
+			_e( 'Only these customers may use this coupon.', 'woocommerce-jos-autocoupon' ); 
+		?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
 		<?php
 
 		//=============================
 		// User roles
 		?>
-		<p class="form-field"><label for="wjecf_customer_roles"><?php _e( 'Customer roles', 'woocommerce-jos-autocoupon' ); ?></label>
+		<p class="form-field"><label for="wjecf_customer_roles"><?php _e( 'Allowed User Roles', 'woocommerce-jos-autocoupon' ); ?></label>
 		<select id="wjecf_customer_roles" name="wjecf_customer_roles[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any role', 'woocommerce-jos-autocoupon' ); ?>">
 			<?php			
 				$coupon_customer_roles = $this->get_coupon_customer_roles( $thepostid );
@@ -180,13 +238,15 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 					. esc_html( $role_name ) . '</option>';
 				}
 			?>
-		</select> <img class="help_tip" data-tip='<?php _e( 'The customer must have one of these roles in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
+		</select> <img class="help_tip" data-tip='<?php 
+			_e( 'Only these User Roles may use this coupon.', 'woocommerce-jos-autocoupon' ); 
+		?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
 		<?php	
 
 		//=============================
 		// Excluded user roles
 		?>
-		<p class="form-field"><label for="wjecf_excluded_customer_roles"><?php _e( 'Excluded customer roles', 'woocommerce-jos-autocoupon' ); ?></label>
+		<p class="form-field"><label for="wjecf_excluded_customer_roles"><?php _e( 'Disallowed User Roles', 'woocommerce-jos-autocoupon' ); ?></label>
 		<select id="wjecf_customer_roles" name="wjecf_excluded_customer_roles[]" style="width: 50%;"  class="wc-enhanced-select" multiple="multiple" data-placeholder="<?php _e( 'Any role', 'woocommerce-jos-autocoupon' ); ?>">
 			<?php			
 				$coupon_excluded_customer_roles = $this->get_coupon_excluded_customer_roles( $thepostid );
@@ -199,13 +259,18 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 					. esc_html( $role_name ) . '</option>';
 				}
 			?>
-		</select> <img class="help_tip" data-tip='<?php _e( 'The customer must not have one of these roles in order for this coupon to be valid.', 'woocommerce-jos-autocoupon' ); ?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
+		</select> <img class="help_tip" data-tip='<?php 
+			_e( 'These User Roles will be specifically excluded from using this coupon.', 'woocommerce-jos-autocoupon' ); 
+		?>' src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" /></p>
 		<?php	
 	}
 	
 	public function process_shop_coupon_meta( $post_id, $post ) {
-		$wjecf_matching_product_qty = isset( $_POST['_wjecf_matching_product_qty'] ) ? $_POST['_wjecf_matching_product_qty'] : '';
-		update_post_meta( $post_id, '_wjecf_matching_product_qty', $wjecf_matching_product_qty );
+		$wjecf_min_matching_product_qty = isset( $_POST['_wjecf_min_matching_product_qty'] ) ? $_POST['_wjecf_min_matching_product_qty'] : '';
+		update_post_meta( $post_id, '_wjecf_min_matching_product_qty', $wjecf_min_matching_product_qty );
+				
+		$wjecf_max_matching_product_qty = isset( $_POST['_wjecf_max_matching_product_qty'] ) ? $_POST['_wjecf_max_matching_product_qty'] : '';
+		update_post_meta( $post_id, '_wjecf_max_matching_product_qty', $wjecf_max_matching_product_qty );
 				
 		$wjecf_products_and = isset( $_POST['_wjecf_products_and'] ) ? 'yes' : 'no';
 		update_post_meta( $post_id, '_wjecf_products_and', $wjecf_products_and );
@@ -256,15 +321,17 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 		
 		
 		//============================
-		//Test quantity of matching products
+		//Test min/max quantity of matching products
 		//
 		//For all items in the cart:
 		//  If coupon contains both a product AND category inclusion filter: the item is counted if it matches either one of them
 		//  If coupon contains either a product OR category exclusion filter: the item will NOT be counted if it matches either one of them
 		//  If sale items are excluded by the coupon: the item will NOT be counted if it is a sale item
 		//  If no filter exist, all items will be counted
-		$matching_product_qty = intval(get_post_meta( $coupon->id, '_wjecf_matching_product_qty', true ));
-		if ( $matching_product_qty > 0 ) { 
+		$min_matching_product_qty = intval(get_post_meta( $coupon->id, '_wjecf_min_matching_product_qty', true ));
+		$max_matching_product_qty = intval(get_post_meta( $coupon->id, '_wjecf_max_matching_product_qty', true ));
+		if ( $min_matching_product_qty > 0 || $max_matching_product_qty > 0 ) { 
+			//Count the products
 			$qty = 0;
 			foreach( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {				
 				$_product = $cart_item['data'];				
@@ -272,7 +339,9 @@ class WC_Jos_Extended_Coupon_Features_Controller {
 					$qty += $cart_item['quantity'];
 				}
 			}
-			if ($qty < $matching_product_qty) return false;
+			//Validate range
+			if ($min_matching_product_qty > 0 && $qty < $min_matching_product_qty) return false;
+			if ($max_matching_product_qty > 0 && $qty > $max_matching_product_qty) return false;
 		}	
 
 

@@ -17,11 +17,8 @@ class WC_Jos_AutoCoupon_Controller{
 			return;
 		}
 		
-		$this->log( $_SERVER['REQUEST_URI'] );
-
 		//Admin hooks
-		add_action( 'wjecf_woocommerce_coupon_options_extended_features', array( $this, 'admin_coupon_options_extended_features' ), 20, 0 );
-		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
+        add_action( 'admin_init', array( &$this, 'admin_init' ) );
 
 		//Frontend hooks
 		//add_action( 'woocommerce_cart_updated',  array( &$this, 'update_matched_autocoupons' ) ); //experiment 2.1.0-b1
@@ -40,7 +37,11 @@ class WC_Jos_AutoCoupon_Controller{
 	}
 	
 /* ADMIN HOOKS */
-
+	public function admin_init() {
+		add_action( 'wjecf_woocommerce_coupon_options_extended_features', array( $this, 'admin_coupon_options_extended_features' ), 20, 0 );
+		add_action( 'woocommerce_process_shop_coupon_meta', array( $this, 'process_shop_coupon_meta' ), 10, 2 );
+	}
+	
 	public function admin_coupon_options_extended_features() {
 		
 		//=============================
@@ -51,7 +52,7 @@ class WC_Jos_AutoCoupon_Controller{
 		//=============================
 		// Auto coupon checkbox
 		woocommerce_wp_checkbox( array(
-			'id'          => 'woocommerce-jos-autocoupon',
+			'id'          => '_wjecf_is_auto_coupon',
 			'label'       => __( 'Auto coupon', 'woocommerce-jos-autocoupon' ),
 			'description' => __( "Automatically add the coupon to the cart if the restrictions are met. Please enter a description when you check this box, the description will be shown in the customer's cart if the coupon is applied.", 'woocommerce-jos-autocoupon' )
 		) );
@@ -70,7 +71,7 @@ class WC_Jos_AutoCoupon_Controller{
 			function update_wjecf_apply_silently_field( animation ) { 
 					if ( animation === undefined ) animation = 'slow';
 					
-					if (jQuery("#woocommerce-jos-autocoupon").prop('checked')) {
+					if (jQuery("#_wjecf_is_auto_coupon").prop('checked')) {
 						jQuery("._wjecf_apply_silently_field").show( animation );
 					} else {
 						jQuery("._wjecf_apply_silently_field").hide( animation );
@@ -78,14 +79,14 @@ class WC_Jos_AutoCoupon_Controller{
 			}
 			update_wjecf_apply_silently_field( 0 );	
 			
-			jQuery("#woocommerce-jos-autocoupon").click( update_wjecf_apply_silently_field );
+			jQuery("#_wjecf_is_auto_coupon").click( update_wjecf_apply_silently_field );
 		</script>
 		<?php
 		
 	}
 	
 	public function process_shop_coupon_meta( $post_id, $post ) {
-		update_post_meta( $post_id, 'woocommerce-jos-autocoupon', isset( $_POST['woocommerce-jos-autocoupon'] ) ? 'yes' : 'no' );
+		update_post_meta( $post_id, '_wjecf_is_auto_coupon', isset( $_POST['_wjecf_is_auto_coupon'] ) ? 'yes' : 'no' );
 		update_post_meta( $post_id, '_wjecf_apply_silently', isset( $_POST['_wjecf_apply_silently'] ) ? 'yes' : 'no' );
 	}	
 
@@ -154,9 +155,9 @@ class WC_Jos_AutoCoupon_Controller{
  * @return void
  */	
 	function update_matched_autocoupons() {
-		$this->log ( 'update_matched_autocoupons' );
+		//$this->log ( 'update_matched_autocoupons' );
 		if ( $this->_check_already_performed ) {
-			$this->log ( 'check already performed' );
+			//$this->log ( 'check already performed' );
 			return;
 		}
 		
@@ -166,13 +167,13 @@ class WC_Jos_AutoCoupon_Controller{
 			if ( ! $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( $this->coupon_can_be_applied($coupon) && $this->coupon_has_a_value( $coupon ) ) {
-					$this->log( sprintf( "Applying %s", $coupon_code ) );
+					//$this->log( sprintf( "Applying %s", $coupon_code ) );
 					$woocommerce->cart->add_discount( $coupon_code );				
 					$calc_needed = false; //Already done by adding the discount
 					$apply_silently = get_post_meta( $coupon->id, '_wjecf_apply_silently', true ) == 'yes';
 					$this->overwrite_success_message( $coupon, $apply_silently );
 				} else {
-					$this->log( sprintf( "Not applicable: %s", $coupon_code ) );
+					//$this->log( sprintf( "Not applicable: %s", $coupon_code ) );
 				}
 			}
 		}
@@ -259,7 +260,7 @@ class WC_Jos_AutoCoupon_Controller{
 			if ( $woocommerce->cart->has_discount( $coupon_code ) ) {
 				$coupon = new WC_Coupon($coupon_code);
 				if ( ! $this->coupon_can_be_applied($coupon) ) {
-					$this->log( sprintf( "Removing %s", $coupon_code ) );
+					//$this->log( sprintf( "Removing %s", $coupon_code ) );
 					WC()->cart->remove_coupon( $coupon_code );  
 					$calc_needed = true;
 				}
@@ -326,7 +327,7 @@ class WC_Jos_AutoCoupon_Controller{
  * @return bool true if it is an "Auto coupon"
  */	
 	private function is_auto_coupon($coupon) {
-		return get_post_meta( $coupon->id, 'woocommerce-jos-autocoupon', true ) == 'yes';
+		return get_post_meta( $coupon->id, '_wjecf_is_auto_coupon', true ) == 'yes';
 	}
 	
 
@@ -356,7 +357,7 @@ class WC_Jos_AutoCoupon_Controller{
 			if ( isset( $_POST['billing_email'] ) )
 				$this->_user_emails[] = $_POST['billing_email'];
 		}
-		$this->log( "User emails: " . join( ",", $this->_user_emails ) );
+		//$this->log( "User emails: " . join( ",", $this->_user_emails ) );
 		return $this->_user_emails;		
 	}
 
@@ -371,7 +372,7 @@ class WC_Jos_AutoCoupon_Controller{
 			$append_emails = array( $append_emails );
 		}
 		$this->_user_emails = array_unique( array_merge( $this->get_user_emails(), $append_emails ) );
-		$this->log('Append emails: ' . join( ',', $append_emails ) );
+		//$this->log('Append emails: ' . join( ',', $append_emails ) );
 	}
 	
 	public function fetch_billing_email( $post_data ) {
@@ -404,7 +405,7 @@ class WC_Jos_AutoCoupon_Controller{
 				'orderby' => 'title',				
 				'meta_query' => array(
 					array(
-						'key' => 'woocommerce-jos-autocoupon',
+						'key' => '_wjecf_is_auto_coupon',
 						'value' => 'yes',
 						'compare' => '=',
 					),

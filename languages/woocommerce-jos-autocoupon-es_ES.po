@@ -3,118 +3,209 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce auto added coupons 1.1.3.1\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-auto-"
-"added-coupons\n"
-"POT-Creation-Date: 2015-05-09 18:32+0100\n"
-"PO-Revision-Date: 2015-05-09 18:33+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-auto-added-coupons\n"
+"POT-Creation-Date: 2015-08-15 15:28+0100\n"
+"PO-Revision-Date: 2015-08-15 15:30+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.8.1\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: C:\\lamp\\www\\qrvm_woo\\wp-content\\plugins\\\n"
 "X-Poedit-SearchPath-0: woocommerce-auto-added-coupons\n"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
+#: includes/wjecf-autocoupon.php:49 includes/wjecf-autocoupon.php:56
 msgid "Auto coupon"
 msgstr "Aplicar cupón automaticamente"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:51
+#: includes/wjecf-autocoupon.php:57
 msgid ""
-"Automatically add the coupon to the cart if the restrictions are met. Please "
-"enter a description when you check this box, the description will be shown "
-"in the customers cart if the coupon is applied."
+"Automatically add the coupon to the cart if the restrictions are met. Please enter a "
+"description when you check this box, the description will be shown in the customer's cart if "
+"the coupon is applied."
 msgstr ""
-"Aplicar el cupón automaticamente al carrito de compras cuando los requisitos "
-"sean cumplidos. Por favor ingrese una descripción, ya que este será mostrado "
-"al cliente cuando el cupón esté aplicado."
+"Aplicar el cupón automaticamente al carrito de compras cuando los requisitos sean cumplidos. "
+"Por favor ingrese una descripción, ya que este será mostrado al cliente cuando el cupón esté "
+"aplicado."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:58
+#: includes/wjecf-autocoupon.php:64
 msgid "Apply silently"
 msgstr "Aplicar sin mensaje"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:59
+#: includes/wjecf-autocoupon.php:65
 msgid "Don't display a message when this coupon is automatically applied."
 msgstr "No mostrar mensaje cuando el cupon esté aplicado automaticamente."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:138
+#: includes/wjecf-autocoupon.php:144
 msgid "Free shipping coupon"
 msgstr "Cupón para envío gratis"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:251
+#: includes/wjecf-autocoupon.php:285
 #, php-format
 msgid "Discount applied: %s"
 msgstr "Descuento aplicado: %s"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:35
+#: includes/wjecf-coupon-extensions.php:82
 msgid "Extended Coupon Features"
 msgstr "Más opciones para cupones"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:37
+#: includes/wjecf-coupon-extensions.php:85
 msgid "Donate to the developer"
 msgstr "Hacer una donación"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:44
+#: includes/wjecf-coupon-extensions.php:100
+msgid "Extended features"
+msgstr "Opciones extendidas"
+
+#: includes/wjecf-coupon-extensions.php:119
 msgid "AND Products (not OR)"
 msgstr "TODOS los productos"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:45
+#: includes/wjecf-coupon-extensions.php:120
 msgid ""
-"Check this box if ALL of the products (see above) must be in the cart to use "
-"this coupon (in stead of only one of the products)."
+"Check this box if ALL of the products (see tab 'usage restriction') must be in the cart to "
+"use this coupon (in stead of only one of the products)."
 msgstr ""
-"Marque esta casilla si TODOS los productos (ve arriba) tienen que estar en "
-"el carrito para poder usar este cupón (en lugar de solo uno de los "
-"productos)."
+"Marque esta casilla si TODOS los productos (vea 'Restricción de uso') necesitan estar en el "
+"carrito de compras (en lugar de uno de los productos)."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:51
+#: includes/wjecf-coupon-extensions.php:126
+msgid "Minimum quantity of matching products"
+msgstr "Cantidad mínima de productos conformes."
+
+#: includes/wjecf-coupon-extensions.php:127
+msgid "No minimum"
+msgstr "Sin mínimo"
+
+#: includes/wjecf-coupon-extensions.php:128
+msgid ""
+"Minimum quantity of the products that match the given product or category restrictions (see "
+"tab 'usage restriction'). If no product or category restrictions are specified, the total "
+"number of products is used."
+msgstr "Cantidad mínima de productos conformes (vea 'Restricción de uso')."
+
+#: includes/wjecf-coupon-extensions.php:136
+msgid "Maximum quantity of matching products"
+msgstr "Cantidad máxima de productos conformes."
+
+#: includes/wjecf-coupon-extensions.php:137
+msgid "No maximum"
+msgstr "Sin máximo"
+
+#: includes/wjecf-coupon-extensions.php:138
+msgid ""
+"Maximum quantity of the products that match the given product or category restrictions (see "
+"tab 'usage restriction'). If no product or category restrictions are specified, the total "
+"number of products is used."
+msgstr "Cantidad mánima de productos conformes (vea 'Restricción de uso')."
+
+#: includes/wjecf-coupon-extensions.php:145
 msgid "(AND)"
 msgstr "(TODOS)"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:52
+#: includes/wjecf-coupon-extensions.php:146
 msgid "(OR)"
 msgstr "(UNO)"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:72
+#: includes/wjecf-coupon-extensions.php:166
 msgid "Shipping methods"
 msgstr "Métodos de envío"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:73
+#: includes/wjecf-coupon-extensions.php:167
 msgid "Any shipping method"
-msgstr "Métodos de pago"
+msgstr "Métodos de envío"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:82
-msgid ""
-"One of these shipping methods must be selected in order for this coupon to "
-"be valid."
-msgstr ""
-"Uno de estos métodos de pago tiene que ser seleccionado para usar este cupón."
+#: includes/wjecf-coupon-extensions.php:176
+msgid "One of these shipping methods must be selected in order for this coupon to be valid."
+msgstr "Uno de estos métodos de pago tiene que ser seleccionado para usar este cupón."
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:88
+#: includes/wjecf-coupon-extensions.php:182
 msgid "Payment methods"
 msgstr "Métodos de pago"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:89
-#, fuzzy
+#: includes/wjecf-coupon-extensions.php:183
 msgid "Any payment method"
 msgstr "Métodos de pago"
 
-#: woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:100
+#: includes/wjecf-coupon-extensions.php:194
+msgid "One of these payment methods must be selected in order for this coupon to be valid."
+msgstr "Uno de estos métodos de envío tiene que ser seleccionado para usar este cupón."
+
+#: includes/wjecf-coupon-extensions.php:200
+msgid "Customer restrictions"
+msgstr "Restricción de clientes"
+
+#: includes/wjecf-coupon-extensions.php:201
 msgid ""
-"One of these payment methods must be selected in order for this coupon to be "
-"valid."
+"If both a customer and a role restriction are supplied, matching either one of them will "
+"suffice."
 msgstr ""
-"Uno de estos métodos de envío tiene que ser seleccionado para usar este "
-"cupón."
+"Si se ha introducido tanto una restricción de cliente como una restricción de perfil, sí "
+"coincide uno de ellos será suficiente."
+
+#: includes/wjecf-coupon-extensions.php:206
+msgid "Allowed Customers"
+msgstr "Clientes"
+
+#: includes/wjecf-coupon-extensions.php:207
+msgid "Any customer"
+msgstr "Clientes"
+
+#: includes/wjecf-coupon-extensions.php:220
+msgid "Only these customers may use this coupon."
+msgstr "Solo estos clientes pueden usar este cupón."
+
+#: includes/wjecf-coupon-extensions.php:227
+msgid "Allowed User Roles"
+msgstr "Perfiles del cliente"
+
+#: includes/wjecf-coupon-extensions.php:228 includes/wjecf-coupon-extensions.php:250
+msgid "Any role"
+msgstr "Perfiles del cliente"
+
+#: includes/wjecf-coupon-extensions.php:242
+msgid "Only these User Roles may use this coupon."
+msgstr "Solo clientes con este perfil pueden usar este cupón."
+
+#: includes/wjecf-coupon-extensions.php:249
+msgid "Disallowed User Roles"
+msgstr "Perfiles del cliente excluidos"
+
+#: includes/wjecf-coupon-extensions.php:263
+msgid "These User Roles will be specifically excluded from using this coupon."
+msgstr "Clientes con este perfil no pueden usar este cupón."
+
+#~ msgid "Customers"
+#~ msgstr "Clientes"
+
+#~ msgid "Coupon only applies to these customers."
+#~ msgstr "Cupón sólo aplicable para estos clientes."
+
+#~ msgid "Customer roles"
+#~ msgstr "Perfiles del cliente"
+
+#~ msgid "The customer must have one of these roles in order for this coupon to be valid."
+#~ msgstr "El cliente ha de tener este perfil para poder user este cupón."
+
+#~ msgid "Excluded customer roles"
+#~ msgstr "Perfiles restringidos"
 
 #~ msgid ""
-#~ "Allow discounts to be automatically added to the cart when it's "
-#~ "restrictions are met. Allow applying coupons via an url."
+#~ "Check this box if ALL of the products (see above) must be in the cart to use this coupon "
+#~ "(in stead of only one of the products)."
 #~ msgstr ""
-#~ "Aplicar ciertos cupónes automaticamente al carrito de compras cuando los "
-#~ "requisitos sean cumplidos. Aplicar cupones a través de la url. "
+#~ "Marque esta casilla si TODOS los productos (ve arriba) tienen que estar en el carrito para "
+#~ "poder usar este cupón (en lugar de solo uno de los productos)."
+
+#~ msgid ""
+#~ "Allow discounts to be automatically added to the cart when it's restrictions are met. "
+#~ "Allow applying coupons via an url."
+#~ msgstr ""
+#~ "Aplicar ciertos cupónes automaticamente al carrito de compras cuando los requisitos sean "
+#~ "cumplidos. Aplicar cupones a través de la url. "
 
 #~ msgid "WooCommerce auto added coupons"
 #~ msgstr "WooCommerce auto added coupons"

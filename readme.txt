@@ -60,7 +60,7 @@ This plugin has been tested with WordPress 4.2.4 and WooCommerce 2.4.1. Also in 
 
 = Is the plugin translatable? =
 
-Yes, all frontend string values are translatable with WPML. Translatable items appear in the context `woocommerce-jos-autocoupon` in "String Translations".
+Yes, all string values are translatable through the supplied POT/PO/MO files. In WPML translatable items appear in the context `woocommerce-jos-autocoupon` in "String Translations".
 
 = Why isn't my coupon applied using www.example.com?apply_coupon=my_coupon ? =
 
@@ -91,17 +91,21 @@ Sure! [This](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5T9XQ
 1. Simply use the WooCommerce Coupons menu to make a coupon an "auto coupon".
 
 == Changelog ==
-= 2.1.0-b4 =
+= 2.1.0-b5 =
 * FIX: Lowered execution priority for apply_coupon by url for combinations with add-to-cart.
 * FEATURE: New coupon feature: Excluded customer role restriction
 * FEATURE: New coupon feature: Customer / customer role restriction
-* FEATURE: New coupon feature: Minimum quantity of matching products
+* FEATURE: New coupon feature: Minimum / maximum quantity of matching products in the cart
 * TWEAK: Moved all settings to the 'Extended features'-tab on the admin page.
 * FEATURE: New coupon feature: Allow auto coupons to be applied silently (without displaying a message)
 * FIX: 2.0.0 broke compatibility with PHP versions older than 5.3
 * FIX: Changed method to fetch email addresses for auto coupon with email address restriction
-* ADDED: Filter wjecf_coupon_has_a_value (An auto coupon will not be applied if this returns false)
-* ADDED: Filter wjecf_coupon_can_be_applied (An auto coupon will not be applied if this returns false)
+* FILTER: Filter wjecf_coupon_has_a_value (An auto coupon will not be applied if this returns false)
+* FILTER: Filter wjecf_coupon_can_be_applied (An auto coupon will not be applied if this returns false)
+* PERFORMANCE: Only load admin hooks if actually on admin page
+* INTERNAL: db_version tracking for automatic updates
+* INTERNAL: Consistent use of wjecf prefix. 
+* INTERNAL: Renamed meta_key woocommerce-jos-autocoupon to _wjecf_is_auto_coupon
 
 = 2.0.0 =
 * RENAME: Renamed plugin from "WooCommerce auto added coupons" to "WooCommerce Extended Coupon Features"

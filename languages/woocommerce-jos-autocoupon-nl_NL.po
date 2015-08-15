@@ -3,110 +3,217 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooCommerce auto added coupons 1.1.3.1\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-auto-"
-"added-coupons\n"
-"POT-Creation-Date: 2015-05-09 18:31+0100\n"
-"PO-Revision-Date: 2015-05-09 18:32+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/woocommerce-auto-added-coupons\n"
+"POT-Creation-Date: 2015-08-15 15:07+0100\n"
+"PO-Revision-Date: 2015-08-15 15:14+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.8.1\n"
 "X-Poedit-KeywordsList: __;_e\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: C:\\lamp\\www\\qrvm_woo\\wp-content\\plugins"
-"\\woocommerce-auto-added-coupons\n"
+"X-Poedit-Basepath: ..\\\n"
+"X-Poedit-SearchPath-0: .\n"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:50
+#: includes/wjecf-autocoupon.php:49 includes/wjecf-autocoupon.php:56
 msgid "Auto coupon"
 msgstr "Automatisch toepassen"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:51
+#: includes/wjecf-autocoupon.php:57
 msgid ""
-"Automatically add the coupon to the cart if the restrictions are met. Please "
-"enter a description when you check this box, the description will be shown "
-"in the customers cart if the coupon is applied."
+"Automatically add the coupon to the cart if the restrictions are met. Please enter a "
+"description when you check this box, the description will be shown in the customer's cart if "
+"the coupon is applied."
 msgstr ""
-"Voeg de kortingsbon automatisch toe aan het winkelwagentje als aan alle "
-"voorwaarden wordt voldaan. Vult u a.u.b. een omschrijving in als u deze "
-"optie aanvinkt, de omschrijving zal aan de klant worden getoond wanneer de "
-"kortingsbon wordt toegevoegd."
+"Voeg de kortingsbon automatisch toe aan het winkelwagentje als aan alle voorwaarden wordt "
+"voldaan. Vult u a.u.b. een omschrijving in als u deze optie aanvinkt, de omschrijving zal aan "
+"de klant worden getoond wanneer de kortingsbon wordt toegevoegd."
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:58
+#: includes/wjecf-autocoupon.php:64
 msgid "Apply silently"
 msgstr "Toepassen zonder melding"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:59
+#: includes/wjecf-autocoupon.php:65
 msgid "Don't display a message when this coupon is automatically applied."
-msgstr ""
-"Geen melding weergeven wanneer deze kortingsbon automatisch wordt toegepast."
+msgstr "Geen melding weergeven wanneer deze kortingsbon automatisch wordt toegepast."
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:138
+#: includes/wjecf-autocoupon.php:144
 msgid "Free shipping coupon"
 msgstr "Gratis verzending kortingsbon"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-autocoupon.php:251
+#: includes/wjecf-autocoupon.php:285
 #, php-format
 msgid "Discount applied: %s"
 msgstr "Korting toegepast: %s"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:35
+#: includes/wjecf-coupon-extensions.php:82
 msgid "Extended Coupon Features"
 msgstr "Uitgebreide Kortingsbon Eigenschappen"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:37
+#: includes/wjecf-coupon-extensions.php:85
 msgid "Donate to the developer"
 msgstr "Doneer aan de ontwikkelaar"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:44
+#: includes/wjecf-coupon-extensions.php:100
+msgid "Extended features"
+msgstr "Uitgebreide functies"
+
+#: includes/wjecf-coupon-extensions.php:119
 msgid "AND Products (not OR)"
 msgstr "ALLE Producten (niet OF)"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:45
+#: includes/wjecf-coupon-extensions.php:120
 msgid ""
-"Check this box if ALL of the products (see above) must be in the cart to use "
-"this coupon (in stead of only one of the products)."
+"Check this box if ALL of the products (see tab 'usage restriction') must be in the cart to "
+"use this coupon (in stead of only one of the products)."
 msgstr ""
-"Aanvinken als ALLE producten (zie boven) in de winkelwagen moeten zitten om "
-"deze kortingsbon te kunnen gebruiken (in plaats van één van de producten)."
+"Aanvinken als ALLE producten (zie tab 'gebruiksbeperkingen') in de winkelwagen moeten zitten "
+"om deze kortingsbon te kunnen gebruiken (in plaats van één van de producten)."
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:51
+#: includes/wjecf-coupon-extensions.php:126
+msgid "Minimum quantity of matching products"
+msgstr "Minimum aantal overeengekomen producten"
+
+#: includes/wjecf-coupon-extensions.php:127
+msgid "No minimum"
+msgstr "Geen minimum"
+
+#: includes/wjecf-coupon-extensions.php:128
+msgid ""
+"Minimum quantity of the products that match the given product or category restrictions (see "
+"tab 'usage restriction'). If no product or category restrictions are specified, the total "
+"number of products is used."
+msgstr ""
+"Minimum aantal producten wat aan de product- of categorierestricties voldoet (zie tab "
+"'gebruiksbeperkingen'). Als geen product- of categorierestrictie is opgegeven worden alle "
+"producten in de winkelwagen geteld."
+
+#: includes/wjecf-coupon-extensions.php:136
+msgid "Maximum quantity of matching products"
+msgstr "Maximum aantal overeengekomen producten"
+
+#: includes/wjecf-coupon-extensions.php:137
+msgid "No maximum"
+msgstr "Geen maximum"
+
+#: includes/wjecf-coupon-extensions.php:138
+msgid ""
+"Maximum quantity of the products that match the given product or category restrictions (see "
+"tab 'usage restriction'). If no product or category restrictions are specified, the total "
+"number of products is used."
+msgstr ""
+"Maximum aantal producten wat aan de product- of categorierestricties voldoet (zie tab "
+"'gebruiksbeperkingen'). Als geen product- of categorierestrictie is opgegeven worden alle "
+"producten in de winkelwagen geteld."
+
+#: includes/wjecf-coupon-extensions.php:145
 msgid "(AND)"
 msgstr "(ALLE)"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:52
+#: includes/wjecf-coupon-extensions.php:146
 msgid "(OR)"
 msgstr "(OF)"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:72
+#: includes/wjecf-coupon-extensions.php:166
 msgid "Shipping methods"
 msgstr "Verzendmethoden"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:73
+#: includes/wjecf-coupon-extensions.php:167
 msgid "Any shipping method"
 msgstr "Verzendmethoden"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:82
-msgid ""
-"One of these shipping methods must be selected in order for this coupon to "
-"be valid."
-msgstr ""
-"Een van deze verzendmethoden moet gekozen zijn om deze kortingsbon te kunnen "
-"gebruiken."
+#: includes/wjecf-coupon-extensions.php:176
+msgid "One of these shipping methods must be selected in order for this coupon to be valid."
+msgstr "Een van deze verzendmethoden moet gekozen zijn om deze kortingsbon te kunnen gebruiken."
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:88
+#: includes/wjecf-coupon-extensions.php:182
 msgid "Payment methods"
 msgstr "Betaalmethoden"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:89
+#: includes/wjecf-coupon-extensions.php:183
 msgid "Any payment method"
 msgstr "Betaalmethoden"
 
-#: C:\lamp\www\qrvm_woo\wp-content\plugins\woocommerce-auto-added-coupons/includes/wjecf-coupon-extensions.php:100
+#: includes/wjecf-coupon-extensions.php:194
+msgid "One of these payment methods must be selected in order for this coupon to be valid."
+msgstr "Een van deze betaalmethoden moet gekozen zijn om deze kortingsbon te kunnen gebruiken."
+
+#: includes/wjecf-coupon-extensions.php:200
+msgid "Customer restrictions"
+msgstr "Klantbeperkingen"
+
+#: includes/wjecf-coupon-extensions.php:201
 msgid ""
-"One of these payment methods must be selected in order for this coupon to be "
-"valid."
+"If both a customer and a role restriction are supplied, matching either one of them will "
+"suffice."
 msgstr ""
-"Een van deze betaalmethoden moet gekozen zijn om deze kortingsbon te kunnen "
-"gebruiken."
+"Als zowel een klant- als klantrolrestrictie is opgegeven hoeft slechts aan één van de "
+"restricties worden voldaan."
+
+#: includes/wjecf-coupon-extensions.php:206
+msgid "Allowed Customers"
+msgstr "Toegestane klanten"
+
+#: includes/wjecf-coupon-extensions.php:207
+msgid "Any customer"
+msgstr "Klanten"
+
+#: includes/wjecf-coupon-extensions.php:220
+msgid "Only these customers may use this coupon."
+msgstr "Alleen deze klanten kunnen deze kortingsbon gebruiken."
+
+#: includes/wjecf-coupon-extensions.php:227
+msgid "Allowed User Roles"
+msgstr "Toegestane klantrollen"
+
+#: includes/wjecf-coupon-extensions.php:228 includes/wjecf-coupon-extensions.php:250
+msgid "Any role"
+msgstr "Klantrollen"
+
+#: includes/wjecf-coupon-extensions.php:242
+msgid "Only these User Roles may use this coupon."
+msgstr "Alleen deze klantrollen kunnen deze kortingsbon gebruiken."
+
+#: includes/wjecf-coupon-extensions.php:249
+msgid "Disallowed User Roles"
+msgstr "Uitgesloten klantrollen"
+
+#: includes/wjecf-coupon-extensions.php:263
+msgid "These User Roles will be specifically excluded from using this coupon."
+msgstr "Deze klantrollen zijn uitgesloten om deze kortingsbon te gebruiken."
+
+#~ msgid "Customers"
+#~ msgstr "Klanten"
+
+#~ msgid "Coupon only applies to these customers."
+#~ msgstr "Kortingsbon is alleen geldig voor deze klanten."
+
+#~ msgid "Customer roles"
+#~ msgstr "Klantrollen"
+
+#~ msgid "The customer must have one of these roles in order for this coupon to be valid."
+#~ msgstr "Dat klant moet een van deze rollen hebben om de kortingsbon te kunnen gebruiken."
+
+#~ msgid "Excluded customer roles"
+#~ msgstr "Uitgesloten klantrollen"
+
+#~ msgid "The customer must not have one of these roles in order for this coupon to be valid."
+#~ msgstr "De klant mag geen van deze rollen hebben om de kortingsbon te kunnen gebruiken."
+
+#~ msgid ""
+#~ "Automatically add the coupon to the cart if the restrictions are met. Please enter a "
+#~ "description when you check this box, the description will be shown in the customers cart "
+#~ "if the coupon is applied."
+#~ msgstr ""
+#~ "Voeg de kortingsbon automatisch toe aan het winkelwagentje als aan alle voorwaarden wordt "
+#~ "voldaan. Vult u a.u.b. een omschrijving in als u deze optie aanvinkt, de omschrijving zal "
+#~ "aan de klant worden getoond wanneer de kortingsbon wordt toegevoegd."
+
+#~ msgid ""
+#~ "Check this box if ALL of the products (see above) must be in the cart to use this coupon "
+#~ "(in stead of only one of the products)."
+#~ msgstr ""
+#~ "Aanvinken als ALLE producten (zie boven) in de winkelwagen moeten zitten om deze "
+#~ "kortingsbon te kunnen gebruiken (in plaats van één van de producten)."
